@@ -3,10 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-    <data>
-        <variable name="user" type="com.project.android.app.inotes.data.model.Entity.User" />
-        <variable name="viewModel" type="com.project.android.app.inotes.ui.register.RegisterViewModel" />
-    </data>
+<!--    <data>-->
+<!--        <variable name="user" type="com.project.android.app.inotes.data.model.Entity.User" />-->
+<!--        <variable name="viewModel" type="com.project.android.app.inotes.ui.register.RegisterViewModel" />-->
+<!--    </data>-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -32,7 +32,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            app:onProgressBar="@{viewModel.onProgressBar()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -94,11 +93,10 @@
             android:background="@drawable/bg_field"
             android:hint="@string/first_name"
             android:inputType="textPersonName"
-            android:onTextChanged="@{(text, start, before, count) -> viewModel.watchFieldFirstName(text)}"
             android:padding="@dimen/padding_secondary"
             android:paddingTop="@dimen/padding_primary"
             android:paddingBottom="@dimen/padding_primary"
-            android:text="@={user.firstName}"
+            android:text=""
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tv_register_msg"
@@ -113,7 +111,6 @@
             android:layout_height="wrap_content"
             android:text="@string/error_name"
             android:textColor="@color/colorError"
-            app:isErrorField="@{viewModel.isErrorFirstName()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/et_first_name"
             app:layout_constraintHorizontal_bias="1.0"
@@ -130,11 +127,9 @@
             android:background="@drawable/bg_field"
             android:hint="@string/last_name"
             android:inputType="textPersonName"
-            android:onTextChanged="@{(text, start, before, count) -> viewModel.watchFieldLastName(text)}"
             android:padding="@dimen/padding_secondary"
             android:paddingTop="@dimen/padding_primary"
             android:paddingBottom="@dimen/padding_primary"
-            android:text="@={user.lastName}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/tv_error_first_name"
             app:layout_constraintStart_toStartOf="@+id/et_first_name"
@@ -149,7 +144,6 @@
             android:layout_height="wrap_content"
             android:text="@string/error_name"
             android:textColor="@color/colorError"
-            app:isErrorField="@{viewModel.isErrorLastName()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/et_last_name"
             app:layout_constraintHorizontal_bias="1.0"
@@ -165,12 +159,11 @@
             android:layout_marginTop="@dimen/margin_primary"
             android:background="@drawable/bg_field"
             android:hint="@string/email"
-            android:inputType="textEmailAddress"
-            android:onTextChanged="@{(text, start, before, count) -> viewModel.watchFieldEmail(text)}"
+            android:inputType="text"
             android:padding="@dimen/padding_secondary"
             android:paddingTop="@dimen/padding_primary"
             android:paddingBottom="@dimen/padding_primary"
-            android:text="@={user.email}"
+            android:text=""
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/tv_error_last_name"
             app:layout_constraintStart_toStartOf="@+id/et_last_name"
@@ -185,7 +178,6 @@
             android:layout_height="wrap_content"
             android:text="@string/error_email"
             android:textColor="@color/colorError"
-            app:isErrorField="@{viewModel.isErrorEmail()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/et_username"
             app:layout_constraintHorizontal_bias="1.0"
@@ -202,9 +194,8 @@
             android:background="@drawable/bg_field"
             android:hint="@string/password"
             android:inputType="textPassword"
-            android:onTextChanged="@{(text, start, before, count) -> viewModel.watchFieldPassword(text)}"
             android:padding="@dimen/padding_secondary"
-            android:text="@={user.password}"
+            android:text=""
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/tv_error_email"
             app:layout_constraintStart_toStartOf="@+id/et_username"
@@ -219,7 +210,6 @@
             android:layout_height="wrap_content"
             android:text="@string/error_password"
             android:textColor="@color/colorError"
-            app:isErrorField="@{viewModel.isErrorPassword()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/et_password"
             app:layout_constraintHorizontal_bias="1.0"
@@ -269,7 +259,6 @@
             android:background="@drawable/bg_button_rectangle"
             android:text="@string/register"
             android:textColor="@color/colorSecondaryText"
-            android:onClick="@{() -> viewModel.doUserRegistration(user)}"
             app:layout_constraintBottom_toTopOf="@+id/ll_to_login"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

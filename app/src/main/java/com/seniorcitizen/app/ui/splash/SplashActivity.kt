@@ -23,7 +23,6 @@ class SplashActivity: AppCompatActivity() {
             finish()
 
         }, Constants.SPLASH_TIME)
-
     }
 
 }

@@ -18,6 +18,13 @@ class SeniorCitizenRepository@Inject constructor(private val seniorCitizenDao: S
     private val apiInterface: ApiInterface, private val utils: Utils) {
     var request : AppAuthenticateRequest? = null
 
+    fun getSeniorLogin(user: String, pw: String) : Observable<List<SeniorCitizen>>{
+        val observableUserFromDb : Observable<List<SeniorCitizen>>
+
+        observableUserFromDb = getSenior(user,pw)
+
+        return observableUserFromDb
+    }
 
     fun getAllSenior(): Observable<List<SeniorCitizen>> {
         val hasConnection = utils.isConnectedToInternet()
@@ -61,6 +68,13 @@ class SeniorCitizenRepository@Inject constructor(private val seniorCitizenDao: S
     private fun getSeniorCitizenFromDb(): Observable<List<SeniorCitizen>> {
         return seniorCitizenDao.getAllSeniorCitizen()
             .toObservable()
+            .doOnNext {
+                Timber.e(it.size.toString())
+            }
+    }
+
+    private fun getSenior(u : String, p: String): Observable<List<SeniorCitizen>>{
+        return seniorCitizenDao.getSeniorCitizen(u,p)
             .doOnNext {
                 Timber.e(it.size.toString())
             }

@@ -2,7 +2,7 @@ object Versions {
 
     // Android
     const val androidCompileSdk = 29
-    const val androidMinSdk = 17
+    const val androidMinSdk = 19
     const val androidTargetSdk = 29
 
     const val constraintLayout = "1.0.2"

@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.seniorcitizen.app.data.model.SeniorCitizen
+import io.reactivex.Observable
 import io.reactivex.Single
 
 /**
@@ -14,7 +15,7 @@ import io.reactivex.Single
 interface SeniorCitizenDao {
 
     @Query("Select * from seniorCitizen where username = :username AND password = :password LIMIT 1")
-    fun getSeniorCitizen(username : String, password : String) : Single<List<SeniorCitizen>>
+    fun getSeniorCitizen(username : String, password : String) : Observable<List<SeniorCitizen>>
 
     @Query("Select * from seniorCitizen")
     fun getAllSeniorCitizen(): Single<List<SeniorCitizen>>
@@ -24,4 +25,5 @@ interface SeniorCitizenDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllSeniorCitizens(seniors : List<SeniorCitizen>)
+
 }

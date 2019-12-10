@@ -1,8 +1,8 @@
 package com.seniorcitizen.app.data.model
 
-import androidx.databinding.Bindable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import java.io.Serializable
 
@@ -11,34 +11,31 @@ import java.io.Serializable
 )
 data class SeniorCitizen(
 
+	@PrimaryKey(autoGenerate = true)
+	var id : Long = 0,
+
 	@Json(name="birthday")
 	@ColumnInfo
-	@Bindable
 	val birthday: String? = null,
 
 	@Json(name="lastName")
 	@ColumnInfo
-	@Bindable
 	val lastName: String? = null,
 
 	@Json(name="address")
 	@ColumnInfo
-	@Bindable
 	val address: String? = null,
 
 	@Json(name="sex")
 	@ColumnInfo
-	@Bindable
 	val sex: String? = null,
 
 	@Json(name="seniorImage")
-	@ColumnInfo
-	@Bindable
-	val seniorImage: Any? = null,
+	@ColumnInfo(typeAffinity = ColumnInfo.BLOB)
+	val seniorImage: ByteArray? = null,
 
 	@Json(name="idNumber")
 	@ColumnInfo
-	@Bindable
 	val idNumber: String? = null,
 
 	@Json(name="creationDate")
@@ -51,27 +48,22 @@ data class SeniorCitizen(
 
 	@Json(name="isPWD")
 	@ColumnInfo
-	@Bindable
 	val isPWD: Boolean? = null,
 
 	@Json(name="seniorCitizenID")
 	@ColumnInfo
-	@Bindable
 	val seniorCitizenID: Int? = null,
 
 	@Json(name="firstName")
 	@ColumnInfo
-	@Bindable
 	val firstName: String? = null,
 
 	@Json(name="password")
 	@ColumnInfo
-	@Bindable
 	val password: String? = null,
 
 	@Json(name="isSenior")
 	@ColumnInfo
-	@Bindable
 	val isSenior: Boolean? = null,
 
 	@Json(name="modifiedDate")
@@ -80,11 +72,31 @@ data class SeniorCitizen(
 
 	@Json(name="middleName")
 	@ColumnInfo
-	@Bindable
 	val middleName: String? = null,
 
 	@Json(name="username")
 	@ColumnInfo
-	@Bindable
 	val username: String? = null
-): Serializable
+): Serializable {
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (javaClass != other?.javaClass) return false
+
+		other as SeniorCitizen
+
+		if (seniorImage != null) {
+			if (other.seniorImage == null) return false
+			if (!seniorImage.contentEquals(other.seniorImage)) return false
+		} else if (other.seniorImage != null) return false
+		if (isSenior != other.isSenior) return false
+		if (modifiedDate != other.modifiedDate) return false
+		if (middleName != other.middleName) return false
+		if (username != other.username) return false
+
+		return true
+	}
+
+	override fun hashCode(): Int {
+		return seniorImage?.contentHashCode() ?: 0
+	}
+}

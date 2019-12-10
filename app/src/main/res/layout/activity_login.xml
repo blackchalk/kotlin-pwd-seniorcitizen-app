@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable name="user" type="com.seniorcitizen.app.data.model.SeniorCitizen" />
-        <variable name="viewModel" type="com.project.android.app.inotes.ui.login.LoginViewModel" />
+        <variable name="viewModel" type="com.seniorcitizen.app.ui.login.LoginViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,7 +32,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            app:onProgressBar="@{viewModel.onProgressBar()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -93,10 +92,9 @@
             android:layout_marginEnd="@dimen/margin_secondary"
             android:background="@drawable/bg_field"
             android:hint="@string/username"
-            android:inputType="textEmailAddress"
-            android:onTextChanged="@{(text, start, before, count) -> viewModel.watchFieldEmail(text)}"
+            android:inputType="text"
             android:padding="@dimen/padding_secondary"
-            android:text="@={user.username}"
+            android:text=""
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tv_login_msg"
@@ -109,9 +107,8 @@
             style="@style/TextPrimaryCaptionStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/error_email"
+            android:text="@string/error_username"
             android:textColor="@color/colorError"
-            app:isErrorField="@{viewModel.isErrorEmail()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/et_username"
             app:layout_constraintHorizontal_bias="1.0"
@@ -128,9 +125,8 @@
             android:background="@drawable/bg_field"
             android:hint="@string/password"
             android:inputType="textPassword"
-            android:onTextChanged="@{(text, start, before, count) -> viewModel.watchFieldPassword(text)}"
             android:padding="@dimen/padding_secondary"
-            android:text="@={user.password}"
+            android:text=""
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/tv_error_email"
             app:layout_constraintStart_toStartOf="@+id/et_username"
@@ -145,7 +141,6 @@
             android:layout_height="wrap_content"
             android:text="@string/error_empty_password"
             android:textColor="@color/colorError"
-            app:isErrorField="@{viewModel.isErrorPassword()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/et_password"
             app:layout_constraintHorizontal_bias="1.0"
@@ -178,7 +173,6 @@
             android:layout_marginEnd="@dimen/margin_horizontal"
             android:layout_marginBottom="@dimen/margin_secondary"
             android:background="@drawable/bg_button_rectangle"
-            android:onClick="@{() -> viewModel.doUserLogging(user)}"
             android:text="@string/login"
             android:textColor="@color/colorSecondaryText"
             app:layout_constraintBottom_toTopOf="@+id/ll_to_register"
