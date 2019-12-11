@@ -9,7 +9,7 @@ object Versions {
     const val supportLibrary = "27.1.0"
 
     // App Libraries
-    const val dagger = "2.15"
+    const val dagger = "2.16"
     const val glassfishAnnotation = "10.0-b28"
     const val glide = "4.6.1"
     const val gson = "2.8.1"

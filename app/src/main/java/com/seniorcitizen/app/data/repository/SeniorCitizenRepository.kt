@@ -14,16 +14,18 @@ import javax.inject.Inject
 /**
  * Created by Nic Evans on 2019-12-10.
  */
-class SeniorCitizenRepository@Inject constructor(private val seniorCitizenDao: SeniorCitizenDao,
-    private val apiInterface: ApiInterface, private val utils: Utils) {
-    var request : AppAuthenticateRequest? = null
 
-    fun getSeniorLogin(user: String, pw: String) : Observable<List<SeniorCitizen>>{
-        val observableUserFromDb : Observable<List<SeniorCitizen>>
+class SeniorCitizenRepository @Inject constructor(
+    private val seniorCitizenDao: SeniorCitizenDao
+    , private val apiInterface: ApiInterface
+    , private val utils: Utils
+) {
 
-        observableUserFromDb = getSenior(user,pw)
+    var request: AppAuthenticateRequest? = null
 
-        return observableUserFromDb
+    fun getSeniorLogin(user: String, pw: String): Observable<List<SeniorCitizen>> {
+
+        return getSenior(user, pw)
     }
 
     fun getAllSenior(): Observable<List<SeniorCitizen>> {
@@ -38,15 +40,16 @@ class SeniorCitizenRepository@Inject constructor(private val seniorCitizenDao: S
         else observableFromDb
     }
 
-    fun authapp(username: String, password: String):Observable<AppAuthenticateResponse>{
+    fun authenticateApp(username: String, password: String): Observable<AppAuthenticateResponse> {
         val hasConnection = utils.isConnectedToInternet()
-        var observableAppAuth : Observable<AppAuthenticateResponse>? = null
+        var observableAppAuth: Observable<AppAuthenticateResponse>? = null
+
         request = AppAuthenticateRequest(username = username, password = password)
-        Timber.e(request.toString())
+
         if (hasConnection) {
             observableAppAuth = apiInterface.authenticateApp(request!!)
-                .doOnNext{
-                    if (it!=null){
+                .doOnNext {
+                    if (it != null) {
                         Constants.APP_TOKEN = it.token.toString()
                     }
                 }
@@ -55,11 +58,11 @@ class SeniorCitizenRepository@Inject constructor(private val seniorCitizenDao: S
 
     }
 
-    private fun getSeniorCitizensFromApi(): Observable<List<SeniorCitizen>>{
-        return apiInterface.getAllSenior("Bearer "+Constants.APP_TOKEN)
-            .doOnNext{
+    private fun getSeniorCitizensFromApi(): Observable<List<SeniorCitizen>> {
+        return apiInterface.getAllSenior("Bearer " + Constants.APP_TOKEN)
+            .doOnNext {
                 Timber.e(it.size.toString())
-                for (item in it){
+                for (item in it) {
                     seniorCitizenDao.insertSeniorCitizen(item)
                 }
             }
@@ -73,8 +76,8 @@ class SeniorCitizenRepository@Inject constructor(private val seniorCitizenDao: S
             }
     }
 
-    private fun getSenior(u : String, p: String): Observable<List<SeniorCitizen>>{
-        return seniorCitizenDao.getSeniorCitizen(u,p)
+    private fun getSenior(u: String, p: String): Observable<List<SeniorCitizen>> {
+        return seniorCitizenDao.getSeniorCitizen(u, p)
             .doOnNext {
                 Timber.e(it.size.toString())
             }

@@ -15,19 +15,16 @@ import javax.inject.Singleton
  */
 
 @Module
-class AppModule(private val app: Application) {
+class AppModule {
 
     @Provides
     @Singleton
-    fun provideApplication(): Application = app
-
-    @Provides
-    @Singleton
-    fun provideSeniorCitizenDatabase(app: Application) : Database = Room.databaseBuilder(app,
-        Database::class.java, Constants.DATABASE_NAME)
+    fun provideDatabase(app: Application) : Database = Room
+        .databaseBuilder(app, Database::class.java, Constants.DATABASE_NAME)
         /*.addMigrations(MIGRATION_1_2)*/
         .fallbackToDestructiveMigration()
         .build()
+
 
     @Provides
     @Singleton
@@ -35,5 +32,6 @@ class AppModule(private val app: Application) {
 
     @Provides
     @Singleton
-    fun provideUtils(): Utils = Utils(app)
+    fun provideUtils(app: Application): Utils = Utils(app)
+
 }

@@ -20,7 +20,7 @@ interface ApiInterface {
         "Content-type: application/json"
     )
     @POST("api/transaction/authenticate")
-    fun authenticateApp(@Body request : AppAuthenticateRequest) : Observable<AppAuthenticateResponse>
+    fun authenticateApp(@Body request: AppAuthenticateRequest) : Observable<AppAuthenticateResponse>
 
     @GET
     fun getAllSenior(@Header("Authorization") authToken: String): Observable<List<SeniorCitizen>>
