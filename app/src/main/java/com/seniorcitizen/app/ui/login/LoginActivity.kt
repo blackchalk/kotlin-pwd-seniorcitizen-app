@@ -32,6 +32,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginCallback{
         viewModel.seniorCitizenResult().observe(this,Observer<List<SeniorCitizen>>{
             if (it!=null){
                 Timber.e(it.size.toString())
+                progress_bar.visibility = View.GONE
             }
         })
 

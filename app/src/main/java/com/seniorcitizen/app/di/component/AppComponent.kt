@@ -24,6 +24,7 @@ import javax.inject.Singleton
         (AppModule::class),
         (NetModule::class)]
 )
+@SuppressWarnings("unchecked")
 interface AppComponent : AndroidInjector<App> {
 
     @Component.Builder

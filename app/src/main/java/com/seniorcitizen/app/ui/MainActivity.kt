@@ -2,45 +2,50 @@ package com.seniorcitizen.app.ui
 
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.seniorcitizen.app.R
 import com.seniorcitizen.app.data.model.AppAuthenticateResponse
-import com.seniorcitizen.app.data.model.SeniorCitizen
+import com.seniorcitizen.app.databinding.ActivityMainBinding
+import com.seniorcitizen.app.ui.base.BaseActivity
 import com.seniorcitizen.app.ui.login.LoginActivity
+import com.seniorcitizen.app.ui.login.LoginCallback
 import com.seniorcitizen.app.ui.register.RegisterActivity
-import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import timber.log.Timber
-import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity<ActivityMainBinding>(), LoginCallback {
 
-    @Inject
-    lateinit var mainActivityViewModelFactory: MainActivityViewModelFactory
-    private lateinit var mainActivityViewModel: MainActivityViewModel
+    private val mainActivityViewModel by lazy {
+        ViewModelProviders.of(this@MainActivity, viewModelFactory)[MainActivityViewModel::class.java]
+            .apply { init(this@MainActivity) }
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        AndroidInjection.inject(this)
+    override fun getContentView(): Int = R.layout.activity_main
 
-        mainActivityViewModel = ViewModelProviders.of(this,mainActivityViewModelFactory).get(
-            MainActivityViewModel::class.java)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
 
         btn_to_login.setOnClickListener { startActivity<LoginActivity>() }
         btn_to_register.setOnClickListener { startActivity<RegisterActivity>() }
+    }
 
-        progress_bar.visibility = View.VISIBLE
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-        getAuth()
+        try{
+            progress_bar.visibility = View.VISIBLE
+            getAppAuthAndUsers()
+
+        }catch(e: Exception){
+            Timber.e(e)
+        }
 
         mainActivityViewModel.appAuthenticateResult().observe(this, Observer<AppAuthenticateResponse>{
             if (it!=null){
-                Timber.e(it.toString())
+                Timber.e("%s,mainActivityViewModel",it.toString())
+                progress_bar.visibility = View.GONE
             }
         })
 
@@ -54,27 +59,27 @@ class MainActivity : AppCompatActivity() {
             if(it == false) progress_bar.visibility = View.GONE
         })
 
-        loadAllSenior()
-
-        mainActivityViewModel.seniorCitizenResult().observe(this, Observer<List<SeniorCitizen>>{
-            if (it!=null){
-                Timber.e(it.size.toString())
-            }
-        })
-
-        mainActivityViewModel.seniorCitizenError().observe(this, Observer<String> {
-            if (it!=null){
-                toast(resources.getString(R.string.error_401) + it)
-            }
-        })
-
-        mainActivityViewModel.seniorCitizenLoader().observe(this, Observer<Boolean>{
-            if(it == false) progress_bar.visibility = View.GONE
-        })
+        // loadAllSenior()
+        //
+        // mainActivityViewModel.seniorCitizenResult().observe(this, Observer<List<SeniorCitizen>>{
+        //     if (it!=null){
+        //         Timber.e(it.size.toString())
+        //     }
+        // })
+        //
+        // mainActivityViewModel.seniorCitizenError().observe(this, Observer<String> {
+        //     if (it!=null){
+        //         toast(resources.getString(R.string.error_401) + it)
+        //     }
+        // })
+        //
+        // mainActivityViewModel.seniorCitizenLoader().observe(this, Observer<Boolean>{
+        //     if(it == false) progress_bar.visibility = View.GONE
+        // })
 
     }
 
-    private fun getAuth(){
+    private fun getAppAuthAndUsers(){
         mainActivityViewModel.loadToken()
     }
 
@@ -87,4 +92,13 @@ class MainActivity : AppCompatActivity() {
 
         super.onDestroy()
     }
+
+    override fun onSuccess() {
+        Timber.i("callback onSuccess")
+    }
+
+    override fun onFailure(responseMessage: String?, responseCode: Int) {
+        Timber.i(responseMessage)
+    }
+
 }
