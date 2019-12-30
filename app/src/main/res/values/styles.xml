@@ -10,23 +10,9 @@
 		<item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
 		<item name="android:windowDrawsSystemBarBackgrounds">true</item>
 
-		<item name="md_color_title">android:textColorPrimary</item>
-		<item name="md_color_content">android:textColorSecondaryr</item>
-		<item name="md_color_button_text">@color/colorPrimary</item>
-	</style>
-
-	<style name="CustomAppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-
-		<item name="colorPrimary">@color/colorPrimary</item>
-		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-		<item name="colorAccent">@color/colorAccent</item>
-		<item name="android:windowTranslucentStatus">true</item>
-		<item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-		<item name="android:windowDrawsSystemBarBackgrounds">true</item>
-
-		<item name="md_color_title">android:textColorPrimary</item>
-		<item name="md_color_content">android:textColorSecondaryr</item>
-		<item name="md_color_button_text">@color/colorPrimary</item>
+<!--        <item name="md_color_title">@color/your_color</item>-->
+<!--        <item name="md_color_content">@color/your_color</item>-->
+<!--        <item name="md_color_button_text">@color/your/color</item>-->
 
 	</style>
 
