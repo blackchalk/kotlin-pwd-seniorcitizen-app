@@ -3,6 +3,8 @@ package com.seniorcitizen.app.data.remote
 import com.seniorcitizen.app.data.model.AppAuthenticateRequest
 import com.seniorcitizen.app.data.model.AppAuthenticateResponse
 import com.seniorcitizen.app.data.model.SeniorCitizen
+import com.seniorcitizen.app.data.model.Transaction
+import com.seniorcitizen.app.data.model.UserTransactionRequest
 import io.reactivex.Observable
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -20,8 +22,11 @@ interface ApiInterface {
         "Content-type: application/json"
     )
     @POST("api/transaction/authenticate")
-    fun authenticateApp(@Body request: AppAuthenticateRequest) : Observable<AppAuthenticateResponse>
+    fun authenticateApp(@Body request: AppAuthenticateRequest): Observable<AppAuthenticateResponse>
 
-    @GET
+    @GET("api/senior/get")
     fun getAllSenior(@Header("Authorization") authToken: String): Observable<List<SeniorCitizen>>
+
+    @GET("api/transaction/get")
+    fun getUserTransactions(@Header("Authorization") authToken: String, @Body request: UserTransactionRequest): Observable<List<Transaction>>
 }

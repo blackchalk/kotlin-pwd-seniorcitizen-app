@@ -11,7 +11,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.seniorcitizen.app.R
-import com.shreyaspatil.MaterialDialog.MaterialDialog
 import javax.inject.Inject
 
 /**
@@ -51,17 +50,6 @@ class Utils @Inject constructor(private val context: Context) {
                     return true
                 }
         return false
-    }
-
-
-    fun showDialogOK(it: FragmentActivity,title: String,msg: String): MaterialDialog {
-        val mDialog = MaterialDialog.Builder(it)
-            .setTitle(title)
-            .setMessage(msg)
-            .setCancelable(false)
-            .build()
-
-        return mDialog
     }
 
     abstract class showDialogAction(
