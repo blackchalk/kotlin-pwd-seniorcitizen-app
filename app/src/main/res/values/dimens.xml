@@ -7,6 +7,7 @@
     <!-- Margin Size -->
     <dimen name="margin_primary">8dp</dimen>
     <dimen name="margin_secondary">16dp</dimen>
+    <dimen name="margin_third">26dp</dimen>
     <dimen name="margin_vertical">40dp</dimen>
     <dimen name="margin_horizontal">40dp</dimen>
     <dimen name="margin_spacing">3dp</dimen>

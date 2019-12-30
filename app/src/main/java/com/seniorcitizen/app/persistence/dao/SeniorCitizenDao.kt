@@ -26,4 +26,7 @@ interface SeniorCitizenDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllSeniorCitizens(seniors : List<SeniorCitizen>)
 
+    @Query("SELECT * from seniorCitizen where idNumber like :idNumber limit 1")
+    fun getSeniorCitizenByIdNumber(idNumber: String): Observable<List<SeniorCitizen>>
+
 }

@@ -5,46 +5,44 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.annotation.Nullable
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import dagger.android.support.AndroidSupportInjection
+import javax.inject.Inject
 
 /**
- * Created by Nic Evans on 2019-12-18.
+ * Created by Nic Evans on 2019-12-20.
  */
+abstract class BaseFragment<VDB : ViewDataBinding, VM : ViewModel> : Fragment() {
+	@Inject
+	lateinit var viewModelFactory: ViewModelProvider.Factory
 
-abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding>(private val mViewModelClass: Class<VM>) : Fragment() {
+	open lateinit var mBinding: VDB
 
-    lateinit var viewModel: VM
+	fun init(inflater: LayoutInflater, container: ViewGroup) {
+		mBinding = DataBindingUtil.inflate(inflater, getLayoutRes(), container, false)
+	}
 
-    open lateinit var mBinding: DB
+	open fun init() {}
 
-    fun init(inflater: LayoutInflater, container: ViewGroup) {
-        mBinding = DataBindingUtil.inflate(inflater, getLayoutRes(), container, false)
-    }
+	@LayoutRes
+	protected abstract fun getLayoutRes(): Int
 
-    open fun init() {}
+	override fun onCreate(@Nullable savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		AndroidSupportInjection.inject(this)
+	}
 
-    @LayoutRes
-    abstract fun getLayoutRes(): Int
+	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+		savedInstanceState: Bundle?): View {
+		init(inflater, container!!)
+		init()
+		super.onCreateView(inflater, container, savedInstanceState)
+		return mBinding.root
+	}
 
-    private fun getViewM(): VM = ViewModelProviders.of(this).get(mViewModelClass)
-
-    open fun onInject() {}
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = getViewM()
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View {
-        init(inflater, container!!)
-        init()
-        super.onCreateView(inflater, container, savedInstanceState)
-        return mBinding.root
-    }
-
-    open fun refresh() {}
 }

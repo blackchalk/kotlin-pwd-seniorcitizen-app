@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "580eda46e1708b00bb087cd51caa52e4",
+    "identityHash": "3ddfe67e3c6ea0adf8c34ca29f94be6f",
     "entities": [
       {
         "tableName": "seniorCitizen",
@@ -117,13 +117,22 @@
           ],
           "autoGenerate": true
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_seniorCitizen_seniorCitizenID",
+            "unique": true,
+            "columnNames": [
+              "seniorCitizenID"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_seniorCitizen_seniorCitizenID` ON `${TABLE_NAME}` (`seniorCitizenID`)"
+          }
+        ],
         "foreignKeys": []
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"580eda46e1708b00bb087cd51caa52e4\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"3ddfe67e3c6ea0adf8c34ca29f94be6f\")"
     ]
   }
 }

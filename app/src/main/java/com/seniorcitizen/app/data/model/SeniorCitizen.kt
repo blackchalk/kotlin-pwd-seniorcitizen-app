@@ -2,12 +2,13 @@ package com.seniorcitizen.app.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import java.io.Serializable
 
 @Entity(
-	tableName = "seniorCitizen"
+	tableName = "seniorCitizen",indices = [Index(value = ["seniorCitizenID"], unique = true)]
 )
 data class SeniorCitizen(
 

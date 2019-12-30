@@ -48,7 +48,6 @@ class MainActivityViewModel @Inject constructor(private val seniorCitizenReposit
             }
 
             override fun onNext(t: AppAuthenticateResponse) {
-                Timber.i("onNext")
                 appResult.postValue(t)
                 appLoader.postValue(false)
                 Timber.i("onNext %s",t)
@@ -86,7 +85,7 @@ class MainActivityViewModel @Inject constructor(private val seniorCitizenReposit
             }
         }
 
-        seniorCitizenRepository.getAllSenior()
+        seniorCitizenRepository.getAllSenior("sample")
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .debounce(400,TimeUnit.MILLISECONDS)

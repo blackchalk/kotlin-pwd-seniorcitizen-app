@@ -3,7 +3,6 @@ package com.seniorcitizen.app.ui
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.seniorcitizen.app.R
 import com.seniorcitizen.app.data.model.AppAuthenticateResponse
 import com.seniorcitizen.app.databinding.ActivityMainBinding
@@ -15,13 +14,16 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import timber.log.Timber
+import javax.inject.Inject
 
 class MainActivity : BaseActivity<ActivityMainBinding>(), LoginCallback {
+    @Inject
+    lateinit var mainActivityViewModel : MainActivityViewModel
 
-    private val mainActivityViewModel by lazy {
-        ViewModelProviders.of(this@MainActivity, viewModelFactory)[MainActivityViewModel::class.java]
-            .apply { init(this@MainActivity) }
-    }
+    // private val mainActivityViewModel by lazy {
+    //     ViewModelProviders.of(this@MainActivity, viewModelFactory)[MainActivityViewModel::class.java]
+    //         .apply { init(this@MainActivity) }
+    // }
 
     override fun getContentView(): Int = R.layout.activity_main
 

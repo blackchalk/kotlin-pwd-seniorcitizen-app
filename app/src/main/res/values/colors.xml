@@ -15,4 +15,8 @@
 	<color name="colorAccent">#D81B60</color>
 	<color name="colorDivide">#EBEBEB</color>
 	<color name="colorError">#FF0000</color>
+
+	<color name="header_green">#007F00</color>
+	<color name="qr_code_reader_square">#999999</color>
+	<color name="qr_code_reader_square_white">#FFFFFFFF</color>
 </resources>
