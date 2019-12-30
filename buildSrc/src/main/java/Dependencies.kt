@@ -2,10 +2,11 @@ object Versions {
 
     // Android
     const val androidCompileSdk = 29
-    const val androidMinSdk = 19
+    const val androidMinSdk = 21
     const val androidTargetSdk = 29
 
     const val constraintLayout = "1.0.2"
+    const val androidxconstraintLayout = "2.0.0-beta4"
     const val supportLibrary = "27.1.0"
 
     // App Libraries
@@ -15,7 +16,7 @@ object Versions {
     const val gson = "2.8.1"
     const val javaxAnnotation = "1.0"
     const val javaxInject = "1"
-    const val kotlin = "1.2.41"
+    const val kotlin = "1.3.61"
     const val leakCanary = "1.5.4"
     const val okHttp = "3.8.1"
     const val retrofit = "2.4.0"
