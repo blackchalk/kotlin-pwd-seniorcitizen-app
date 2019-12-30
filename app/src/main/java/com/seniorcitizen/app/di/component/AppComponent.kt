@@ -4,6 +4,7 @@ import android.app.Application
 import com.seniorcitizen.app.App
 import com.seniorcitizen.app.di.module.ActivityBuilderModule
 import com.seniorcitizen.app.di.module.AppModule
+import com.seniorcitizen.app.di.module.FragmentBuilderModule
 import com.seniorcitizen.app.di.module.NetModule
 import dagger.BindsInstance
 import dagger.Component
@@ -21,6 +22,7 @@ import javax.inject.Singleton
     [(AndroidInjectionModule::class),
         (AndroidSupportInjectionModule::class),
         (ActivityBuilderModule::class),
+        (FragmentBuilderModule::class),
         (AppModule::class),
         (NetModule::class)]
 )
