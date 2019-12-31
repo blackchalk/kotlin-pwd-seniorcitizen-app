@@ -15,14 +15,13 @@ import javax.inject.Inject
 /**
  * Created by Nic Evans on 2019-12-10.
  */
-class LoginViewModel @Inject constructor(private val seniorCitizenRepository: SeniorCitizenRepository) : ViewModel(){
+class LoginViewModel @Inject constructor(private val seniorCitizenRepository: SeniorCitizenRepository, private val validator: Validator) : ViewModel(){
 
     private lateinit var loginCallback: LoginCallback
     fun init(loginCallback: LoginCallback) {
         this.loginCallback = loginCallback
     }
 
-    private val validator = Validator()
     var seniorCitizenResult: MutableLiveData<List<Entity.SeniorCitizen>> = MutableLiveData()
     var seniorCitizenError: MutableLiveData<String> = MutableLiveData()
     var seniorCitizenLoader: MutableLiveData<Boolean> = MutableLiveData()
@@ -61,9 +60,11 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
 
                     if(t.isNotEmpty()){
                         loginCallback.onSuccess()
+                        getLoggedInUser()
                     }else{
                         loginCallback.onFailure("No User Found.")
                     }
+
                 }
 
                 override fun onError(e: Throwable) {
@@ -72,6 +73,7 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
                     seniorCitizenLoader.postValue(false)
                     _onProgressBar.postValue(false)
                     loginCallback.onFailure(e.message)
+
                 }
 
             }
@@ -82,6 +84,7 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .debounce(400, TimeUnit.MILLISECONDS)
+                    .doOnComplete { disposableObserver.dispose() }
                     .subscribe(disposableObserver) } }
             }
     }
@@ -100,5 +103,9 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
 
     fun disposeElements(){
         if(!disposableObserver.isDisposed) disposableObserver.dispose()
+    }
+
+    fun getLoggedInUser() : String? {
+        return seniorCitizenResult.value?.first()?.idNumber.toString()
     }
 }

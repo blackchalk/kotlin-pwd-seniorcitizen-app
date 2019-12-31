@@ -4,13 +4,26 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import javax.inject.Inject
 import javax.inject.Provider
+import javax.inject.Singleton
 
 /**
  * Created by Nic Evans on 2019-12-10.
  */
-class ViewModelFactoryUtil@Inject constructor(private val viewModel: MutableMap<Class<out ViewModel>, Provider<ViewModel>>)
-    : ViewModelProvider.Factory {
+@Singleton
+class ViewModelFactoryUtil@Inject constructor(
+    private val viewModel: MutableMap<Class<out ViewModel>,  @JvmSuppressWildcards Provider<ViewModel>>
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        val creator = viewModel[modelClass] ?: viewModel.entries.firstOrNull {
+            modelClass.isAssignableFrom(it.key)
+        }?.value ?: throw IllegalArgumentException("unknown model class $modelClass")
+        try {
+            @Suppress("UNCHECKED_CAST")
+            return creator.get() as T
+        } catch (e: Exception) {
+            throw RuntimeException(e)
+        }
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T = viewModel[modelClass]?.get() as T
+    }
 
 }

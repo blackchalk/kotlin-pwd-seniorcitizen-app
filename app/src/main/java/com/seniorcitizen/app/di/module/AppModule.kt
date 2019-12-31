@@ -6,6 +6,7 @@ import com.seniorcitizen.app.persistence.dao.SeniorCitizenDao
 import com.seniorcitizen.app.persistence.local.Database
 import com.seniorcitizen.app.utils.Constants
 import com.seniorcitizen.app.utils.Utils
+import com.seniorcitizen.app.utils.Validator
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -33,5 +34,9 @@ class AppModule {
     @Provides
     @Singleton
     fun provideUtils(app: Application): Utils = Utils(app)
+
+    @Provides
+    @Singleton
+    fun provideValidator() : Validator = Validator()
 
 }

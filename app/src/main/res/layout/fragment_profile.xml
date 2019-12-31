@@ -8,12 +8,19 @@
             type="com.seniorcitizen.app.data.model.Entity.SeniorCitizen" />
         <variable
             name="viewmodel"
-            type="com.seniorcitizen.app.ui.profile.ProfileViewModel" />
+            type="com.seniorcitizen.app.ui.home.HomeActivityViewModel" />
+		<variable
+			name="viewmodelProfile"
+			type="com.seniorcitizen.app.ui.profile.ProfileViewModel" />
     </data>
+
+<ScrollView
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
 <androidx.constraintlayout.widget.ConstraintLayout
 	android:id="@+id/clt_parent"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+	android:layout_height="wrap_content">
 
 	<ImageView
 		android:id="@+id/iv_bg_login"
@@ -49,16 +56,6 @@
 
 		</androidx.cardview.widget.CardView>
 
-	<androidx.appcompat.widget.LinearLayoutCompat
-		android:id="@+id/llt_profileinfo"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="vertical"
-		app:layout_constraintVertical_weight="1.0"
-		app:layout_constraintTop_toBottomOf="@id/iv_profileImage"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintStart_toEndOf="parent">
-
 		<TextView
 			android:id="@+id/tv_labelName"
 			style="@style/TextPrimaryHeadingStyle"
@@ -67,11 +64,9 @@
 			android:layout_marginStart="@dimen/margin_secondary"
 			android:layout_marginTop="@dimen/margin_vertical"
 			android:text="@string/profile_label_name"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintHorizontal_bias="0.0"
+			app:layout_constraintTop_toBottomOf="@id/iv_profileImage"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintVertical_bias="0.0" />
+			app:layout_constraintStart_toEndOf="parent" />
 
 		<TextView
 			android:id="@+id/tv_labelAddress"
@@ -81,11 +76,9 @@
 			android:layout_marginStart="@dimen/margin_secondary"
 			android:layout_marginTop="@dimen/margin_vertical"
 			android:text="@string/profile_label_address"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintHorizontal_bias="0.0"
+			app:layout_constraintTop_toBottomOf="@id/tv_labelName"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintVertical_bias="0.0" />
+			app:layout_constraintStart_toEndOf="parent" />
 
 		<TextView
 			android:id="@+id/tv_labelBirthday"
@@ -95,11 +88,8 @@
 			android:layout_marginStart="@dimen/margin_secondary"
 			android:layout_marginTop="@dimen/margin_vertical"
 			android:text="@string/profile_label_birthday"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintHorizontal_bias="0.0"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintVertical_bias="0.0" />
+			app:layout_constraintTop_toBottomOf="@id/tv_labelAddress"
+			app:layout_constraintStart_toStartOf="parent" />
 
 		<TextView
 			android:id="@+id/tv_labelAge"
@@ -109,11 +99,8 @@
 			android:layout_marginStart="@dimen/margin_secondary"
 			android:layout_marginTop="@dimen/margin_vertical"
 			android:text="@string/profile_label_age"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintHorizontal_bias="0.0"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintVertical_bias="0.0" />
+			app:layout_constraintTop_toBottomOf="@id/tv_labelBirthday"
+			app:layout_constraintStart_toStartOf="parent" />
 
 		<TextView
 			android:id="@+id/tv_labelSex"
@@ -123,11 +110,8 @@
 			android:layout_marginStart="@dimen/margin_secondary"
 			android:layout_marginTop="@dimen/margin_vertical"
 			android:text="@string/profile_label_sex"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintHorizontal_bias="0.0"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintVertical_bias="0.0" />
+			app:layout_constraintTop_toBottomOf="@id/tv_labelAge"
+			app:layout_constraintStart_toStartOf="parent" />
 
 		<TextView
 			android:id="@+id/tv_labelIDnumber"
@@ -137,13 +121,88 @@
 			android:layout_marginStart="@dimen/margin_secondary"
 			android:layout_marginTop="@dimen/margin_vertical"
 			android:text="@string/profile_label_id_number"
-			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/tv_labelSex"
+			app:layout_constraintStart_toStartOf="parent" />
+
+		<!--TextViews data-->
+		<TextView
+			android:id="@+id/tv_name"
+			style="@style/TextPrimaryHeadingStyle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="@dimen/margin_secondary"
+			android:layout_marginTop="@dimen/margin_vertical"
+			android:text="@{viewmodelProfile.getUserFullName()}"
+			app:layout_constraintStart_toEndOf="@+id/tv_labelName"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.0"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintVertical_bias="0.0" />
+			app:layout_constraintTop_toBottomOf="@id/iv_profileImage"/>
 
+	<TextView
+		android:id="@+id/tv_address"
+		style="@style/TextPrimaryHeadingStyle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="@dimen/margin_secondary"
+		android:layout_marginTop="@dimen/margin_vertical"
+		android:text="@{user.address}"
+		app:layout_constraintStart_toEndOf="@+id/tv_name"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintHorizontal_bias="0.0"
+		app:layout_constraintTop_toBottomOf="@id/tv_name"/>
 
-	</androidx.appcompat.widget.LinearLayoutCompat>
+	<TextView
+		android:id="@+id/tv_birthday"
+		style="@style/TextPrimaryHeadingStyle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="@dimen/margin_secondary"
+		android:layout_marginTop="@dimen/margin_vertical"
+		android:text="@{user.birthday}"
+		app:layout_constraintStart_toEndOf="@+id/tv_address"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintHorizontal_bias="0.0"
+		app:layout_constraintTop_toBottomOf="@id/tv_address"/>
+
+	<TextView
+		android:id="@+id/tv_age"
+		style="@style/TextPrimaryHeadingStyle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="@dimen/margin_secondary"
+		android:layout_marginTop="@dimen/margin_vertical"
+		android:text="age"
+		app:layout_constraintStart_toEndOf="@+id/tv_birthday"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintHorizontal_bias="0.0"
+		app:layout_constraintTop_toBottomOf="@id/tv_birthday"/>
+
+	<TextView
+		android:id="@+id/tv_sex"
+		style="@style/TextPrimaryHeadingStyle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="@dimen/margin_secondary"
+		android:layout_marginTop="@dimen/margin_vertical"
+		android:text="@{user.sex}"
+		app:layout_constraintStart_toEndOf="@+id/tv_age"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintHorizontal_bias="0.0"
+		app:layout_constraintTop_toBottomOf="@id/tv_age"/>
+
+	<TextView
+		android:id="@+id/tv_id_number"
+		style="@style/TextPrimaryHeadingStyle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="@dimen/margin_secondary"
+		android:layout_marginTop="@dimen/margin_vertical"
+		android:text="@{user.idNumber}"
+		app:layout_constraintStart_toEndOf="@+id/tv_sex"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintHorizontal_bias="0.0"
+		app:layout_constraintTop_toBottomOf="@id/tv_sex"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+	</ScrollView>
 </layout>

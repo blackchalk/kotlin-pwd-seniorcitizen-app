@@ -3,9 +3,9 @@ package com.seniorcitizen.app.ui.home
 import android.Manifest
 import android.content.res.Resources
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -15,30 +15,27 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.seniorcitizen.app.R
+import com.seniorcitizen.app.data.model.Entity
 import com.seniorcitizen.app.databinding.ActivityHomeBinding
 import com.seniorcitizen.app.ui.base.BaseActivity
+import com.seniorcitizen.app.utils.Constants
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.disposables.Disposable
 import timber.log.Timber
-import javax.inject.Inject
-
 
 /**
  * Created by Nic Evans on 2019-12-20.
  */
-class HomeActivity: BaseActivity<ActivityHomeBinding>() {
+class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 
 	private lateinit var appBarConfiguration : AppBarConfiguration
 	private lateinit var disposable : Disposable
 
-	@Inject
-	lateinit var viewmodel : HomeActivityViewModel
+	private val viewModel: HomeActivityViewModel by viewModels {
+		viewModelFactory
+	}
 
 	override fun getContentView(): Int = R.layout.activity_home
-
-	override fun onActivityCreated(savedInstanceState: Bundle?) {
-
-	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -46,16 +43,47 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>() {
 		val toolbar = findViewById<Toolbar>(R.id.toolbar)
 		setSupportActionBar(toolbar)
 
+		checkPermission()
+	}
+
+	override fun onActivityCreated(savedInstanceState: Bundle?) {
+
+		val extra = intent.getStringExtra(Constants.INTENT_KEY) ?: null
+		viewModel.apply { init(this@HomeActivity) }
+
+		if (extra != null) {
+			viewModel.getUserIdNumber(extra)
+			val test = viewModel.currentUser()
+			Timber.e("%s",test)
+		}
+
+		getBinding()?.let {
+			it.viewModel = viewModel
+		}
+
+		viewModel.doRequetUser()
+
+		viewModel.seniorCitizenResult.observe(this, Observer<List<Entity.SeniorCitizen>>{
+			if (it.isNotEmpty()){
+				Timber.i("%s", it[0])
+			}
+		})
+	}
+
+	private fun checkPermission() {
 		val rxPermissions = RxPermissions(this) // where this is an Activity or Fragment instance
 
 		// Must be done during an initialization phase like onCreate
 		disposable = rxPermissions
-			.request(Manifest.permission.CAMERA)
+			.request(Manifest.permission.WRITE_EXTERNAL_STORAGE
+				, Manifest.permission.READ_EXTERNAL_STORAGE
+				,Manifest.permission.CAMERA)
 			.subscribe { granted: Boolean ->
 				if (granted) { // Always true pre-M
 					init()
 				} else { // Oups permission denied
 					Timber.e("Permission denied")
+					finish()
 				}
 			}
 	}
@@ -81,11 +109,8 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>() {
 				Integer.toString(destination.id)
 			}
 
-			Toast.makeText(
-				this@HomeActivity, "Navigated to $dest",
-				Toast.LENGTH_SHORT
-			).show()
-			Log.d("NavigationActivity", "Navigated to $dest")
+			// Toast.makeText(this@HomeActivity, "Navigated to $dest", Toast.LENGTH_SHORT).show()
+			Timber.i( "Navigated to $dest")
 		}
 	}
 
@@ -98,19 +123,6 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>() {
 		val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
 		bottomNav?.setupWithNavController(navController)
 	}
-
-	// override fun onCreateOptionsMenu(menu: Menu): Boolean {
-	// 	val retValue = super.onCreateOptionsMenu(menu)
-	// 	val navigationView = findViewById<NavigationView>(R.id.nav_view)
-	// 	// The NavigationView already has these same navigation items, so we only add
-	// 	// navigation items to the menu here if there isn't a NavigationView
-	// 	if (navigationView == null) {
-	// 		menuInflater.inflate(R.menu.overflow_menu, menu)
-	// 		return true
-	// 	}
-	// 	return retValue
-	// }
-
 	   override fun onSupportNavigateUp(): Boolean {
        // Allows NavigationUI to support proper up navigation or the drawer layout
        // drawer menu, depending on the situation
@@ -122,5 +134,11 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>() {
 		if (!disposable.isDisposed){
 			disposable.dispose()
 		}
+
+		viewModel.disposeElements()
+	}
+
+	override fun onSuccess() {
+
 	}
 }

@@ -9,6 +9,7 @@ import dagger.android.ContributesAndroidInjector
 /**
  * Created by Nic Evans on 2019-12-10.
  */
+@Suppress("unused")
 @Module(
     includes = [
         ViewModelBuilder::class
