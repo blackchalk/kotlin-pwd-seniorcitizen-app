@@ -113,6 +113,10 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:1.1.0"
     implementation "androidx.constraintlayout:constraintlayout:2.0.0-beta4"
     implementation "androidx.appcompat:appcompat:1.1.0"
+
+    // Arch
+    implementation "androidx.lifecycle:lifecycle-extensions:2.1.0"
+
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
     //qr scanner
     implementation 'com.dlazaro66.qrcodereaderview:qrcodereaderview:2.0.2'
