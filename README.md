@@ -1,4 +1,4 @@
-	# Project Title
+# Project Title
 
 Development of pwd/senior citizen id and card
 
