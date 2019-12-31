@@ -5,7 +5,7 @@ import com.squareup.moshi.Json
 data class Transaction(
 
 	@Json(name="seniorCitizen")
-	val seniorCitizen: SeniorCitizen? = null,
+	val seniorCitizen: Entity.SeniorCitizen? = null,
 
 	@Json(name="totalQuantity")
 	val totalQuantity: Int? = null,

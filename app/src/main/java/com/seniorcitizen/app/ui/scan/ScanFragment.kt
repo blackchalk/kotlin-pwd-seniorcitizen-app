@@ -109,7 +109,6 @@ class ScanFragment: BaseFragment<FragmentScanBinding, ScanViewModel>(), QRCodeRe
             qrdecoderview.setBackCamera()
 		}catch (ex : Exception){
 			ex.printStackTrace()
-			Timber.e("timber %s",ex)
 		}
 	}
 

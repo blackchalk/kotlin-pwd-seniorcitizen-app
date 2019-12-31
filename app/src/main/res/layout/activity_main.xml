@@ -4,7 +4,7 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools">
 	<data>
-		<variable name="user" type="com.seniorcitizen.app.data.model.SeniorCitizen" />
+		<variable name="user" type="com.seniorcitizen.app.data.model.Entity.SeniorCitizen" />
 		<variable name="viewModel" type="com.seniorcitizen.app.ui.MainActivityViewModel" />
 	</data>
 <androidx.constraintlayout.widget.ConstraintLayout

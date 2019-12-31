@@ -2,7 +2,7 @@ package com.seniorcitizen.app.data.remote
 
 import com.seniorcitizen.app.data.model.AppAuthenticateRequest
 import com.seniorcitizen.app.data.model.AppAuthenticateResponse
-import com.seniorcitizen.app.data.model.SeniorCitizen
+import com.seniorcitizen.app.data.model.Entity
 import com.seniorcitizen.app.data.model.Transaction
 import com.seniorcitizen.app.data.model.UserTransactionRequest
 import io.reactivex.Observable
@@ -25,7 +25,7 @@ interface ApiInterface {
     fun authenticateApp(@Body request: AppAuthenticateRequest): Observable<AppAuthenticateResponse>
 
     @GET("api/senior/get")
-    fun getAllSenior(@Header("Authorization") authToken: String): Observable<List<SeniorCitizen>>
+    fun getAllSenior(@Header("Authorization") authToken: String): Observable<List<Entity.SeniorCitizen>>
 
     @GET("api/transaction/get")
     fun getUserTransactions(@Header("Authorization") authToken: String, @Body request: UserTransactionRequest): Observable<List<Transaction>>

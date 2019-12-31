@@ -2,7 +2,7 @@ package com.seniorcitizen.app.data.repository
 
 import com.seniorcitizen.app.data.model.AppAuthenticateRequest
 import com.seniorcitizen.app.data.model.AppAuthenticateResponse
-import com.seniorcitizen.app.data.model.SeniorCitizen
+import com.seniorcitizen.app.data.model.Entity
 import com.seniorcitizen.app.data.remote.ApiInterface
 import com.seniorcitizen.app.persistence.dao.SeniorCitizenDao
 import com.seniorcitizen.app.utils.Utils
@@ -26,16 +26,16 @@ class SeniorCitizenRepository @Inject constructor(
 
     var request: AppAuthenticateRequest? = null
 
-    fun getSeniorLogin(user: String, pw: String): Observable<List<SeniorCitizen>> {
+    fun getSeniorLogin(user: String, pw: String): Observable<List<Entity.SeniorCitizen>> {
 
         return getSenior(user, pw)
     }
 
-    fun getAllSenior(appToken: String): Observable<List<SeniorCitizen>> {
+    fun getAllSenior(appToken: String): Observable<List<Entity.SeniorCitizen>> {
 
         val hasConnection = utils.isConnectedToInternet()
 
-        val observableFromApi: Observable<List<SeniorCitizen>>?
+        val observableFromApi: Observable<List<Entity.SeniorCitizen>>?
 
         // if (hasConnection) {
             observableFromApi = getSeniorCitizensFromApi(appToken)
@@ -69,7 +69,7 @@ class SeniorCitizenRepository @Inject constructor(
 
     }
 
-    private fun getSeniorCitizensFromApi(token : String): Observable<List<SeniorCitizen>> {
+    private fun getSeniorCitizensFromApi(token : String): Observable<List<Entity.SeniorCitizen>> {
 
         return apiInterface.getAllSenior("Bearer " + token)
             .doOnNext {
@@ -80,7 +80,7 @@ class SeniorCitizenRepository @Inject constructor(
             }
     }
 
-    private fun getSeniorCitizenFromDb(): Observable<List<SeniorCitizen>> {
+    private fun getSeniorCitizenFromDb(): Observable<List<Entity.SeniorCitizen>> {
         return seniorCitizenDao.getAllSeniorCitizen()
             .toObservable()
             .doOnNext {
@@ -88,14 +88,14 @@ class SeniorCitizenRepository @Inject constructor(
             }
     }
 
-    private fun getSenior(u: String, p: String): Observable<List<SeniorCitizen>> {
+    private fun getSenior(u: String, p: String): Observable<List<Entity.SeniorCitizen>> {
         return seniorCitizenDao.getSeniorCitizen(u, p)
             .doOnNext {
                 Timber.e(it.size.toString())
             }
     }
 
-    private fun getSeniorByID(id: String): Observable<List<SeniorCitizen>> {
+    private fun getSeniorByID(id: String): Observable<List<Entity.SeniorCitizen>> {
         return seniorCitizenDao.getSeniorCitizenByIdNumber(id)
             .doOnNext {
                 Timber.e(it.size.toString())

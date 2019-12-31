@@ -13,7 +13,7 @@ class RegisterActivity: BaseActivity<ActivityRegisterBinding>(), RegisterCallbac
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         iv_back.setOnClickListener {
-            // startActivity<MainActivity>()
+            // pop to last stack
             finish()
         }
         tv_to_login.setOnClickListener { toLoginPage() }

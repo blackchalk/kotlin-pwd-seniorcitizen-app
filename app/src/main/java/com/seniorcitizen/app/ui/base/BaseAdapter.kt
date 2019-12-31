@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
-import com.seniorcitizen.app.data.model.SeniorCitizen
+import com.seniorcitizen.app.data.model.Entity
 
 /**
  * Created by Nic Evans on 2019-12-10.
  */
-abstract class BaseAdapter<B: ViewDataBinding, H: RecyclerView.ViewHolder, M: SeniorCitizen>
+abstract class BaseAdapter<B: ViewDataBinding, H: RecyclerView.ViewHolder, M: Entity.SeniorCitizen>
     (private val context: Context, private val listItem: List<M>) : RecyclerView.Adapter<H>() {
 
     private var binding: B? = null

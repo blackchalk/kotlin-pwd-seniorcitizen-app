@@ -1,11 +1,15 @@
 package com.seniorcitizen.app.data.model
 
+import androidx.databinding.BaseObservable
+import androidx.databinding.Bindable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import java.io.Serializable
+
+sealed class Entity: BaseObservable(){
 
 @Entity(
 	tableName = "seniorCitizen",indices = [Index(value = ["seniorCitizenID"], unique = true)]
@@ -17,31 +21,36 @@ data class SeniorCitizen(
 
 	@Json(name="birthday")
 	@ColumnInfo
-	val birthday: String? = null,
+	@Bindable
+	var birthday: String? = null,
 
 	@Json(name="lastName")
 	@ColumnInfo
-	val lastName: String? = null,
+	@Bindable
+	var lastName: String? = null,
 
 	@Json(name="address")
 	@ColumnInfo
-	val address: String? = null,
+	@Bindable
+	var address: String? = null,
 
 	@Json(name="sex")
 	@ColumnInfo
-	val sex: String? = null,
+	@Bindable
+	var sex: String? = null,
 
 	@Json(name="seniorImage")
 	@ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-	val seniorImage: ByteArray? = null,
+	var seniorImage: ByteArray? = null,
 
 	@Json(name="idNumber")
 	@ColumnInfo
-	val idNumber: String? = null,
+	@Bindable
+	var idNumber: String? = null,
 
 	@Json(name="creationDate")
 	@ColumnInfo
-	val creationDate: String? = null,
+	var creationDate: String? = null,
 
 	@Json(name="isActive")
 	@ColumnInfo
@@ -49,36 +58,43 @@ data class SeniorCitizen(
 
 	@Json(name="isPWD")
 	@ColumnInfo
-	val isPWD: Boolean? = null,
+	@Bindable
+	var isPWD: Boolean? = null,
 
 	@Json(name="seniorCitizenID")
 	@ColumnInfo
-	val seniorCitizenID: Int? = null,
+	@Bindable
+	var seniorCitizenID: Int? = null,
 
 	@Json(name="firstName")
 	@ColumnInfo
-	val firstName: String? = null,
+	@Bindable
+	var firstName: String? = null,
 
 	@Json(name="password")
 	@ColumnInfo
-	val password: String? = null,
+	@Bindable
+	var password: String? = null,
 
 	@Json(name="isSenior")
 	@ColumnInfo
-	val isSenior: Boolean? = null,
+	@Bindable
+	var isSenior: Boolean? = null,
 
 	@Json(name="modifiedDate")
 	@ColumnInfo
-	val modifiedDate: String? = null,
+	var modifiedDate: String? = null,
 
 	@Json(name="middleName")
 	@ColumnInfo
-	val middleName: String? = null,
+	@Bindable
+	var middleName: String? = null,
 
 	@Json(name="username")
 	@ColumnInfo
-	val username: String? = null
-): Serializable {
+	@Bindable
+	var username: String? = null
+): Serializable, com.seniorcitizen.app.data.model.Entity() {
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
 		if (javaClass != other?.javaClass) return false
@@ -87,7 +103,7 @@ data class SeniorCitizen(
 
 		if (seniorImage != null) {
 			if (other.seniorImage == null) return false
-			if (!seniorImage.contentEquals(other.seniorImage)) return false
+			if (!seniorImage!!.contentEquals(other.seniorImage!!)) return false
 		} else if (other.seniorImage != null) return false
 		if (isSenior != other.isSenior) return false
 		if (modifiedDate != other.modifiedDate) return false
@@ -100,4 +116,5 @@ data class SeniorCitizen(
 	override fun hashCode(): Int {
 		return seniorImage?.contentHashCode() ?: 0
 	}
+}
 }

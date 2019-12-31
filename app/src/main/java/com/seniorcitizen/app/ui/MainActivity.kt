@@ -8,7 +8,6 @@ import com.seniorcitizen.app.data.model.AppAuthenticateResponse
 import com.seniorcitizen.app.databinding.ActivityMainBinding
 import com.seniorcitizen.app.ui.base.BaseActivity
 import com.seniorcitizen.app.ui.login.LoginActivity
-import com.seniorcitizen.app.ui.login.LoginCallback
 import com.seniorcitizen.app.ui.register.RegisterActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.startActivity
@@ -16,7 +15,7 @@ import org.jetbrains.anko.toast
 import timber.log.Timber
 import javax.inject.Inject
 
-class MainActivity : BaseActivity<ActivityMainBinding>(), LoginCallback {
+class MainActivity : BaseActivity<ActivityMainBinding>(){
     @Inject
     lateinit var mainActivityViewModel : MainActivityViewModel
 
@@ -94,13 +93,4 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), LoginCallback {
 
         super.onDestroy()
     }
-
-    override fun onSuccess() {
-        Timber.i("callback onSuccess")
-    }
-
-    override fun onFailure(responseMessage: String?, responseCode: Int) {
-        Timber.i(responseMessage)
-    }
-
 }

@@ -40,5 +40,4 @@ abstract class BaseActivity<B: ViewDataBinding> : DaggerAppCompatActivity(), Bas
             toast(message.toString())
         }
     }
-
 }

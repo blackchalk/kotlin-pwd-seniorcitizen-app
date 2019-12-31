@@ -3,10 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-<!--    <data>-->
-<!--        <variable name="user" type="com.project.android.app.inotes.data.model.Entity.User" />-->
-<!--        <variable name="viewModel" type="com.project.android.app.inotes.ui.register.RegisterViewModel" />-->
-<!--    </data>-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

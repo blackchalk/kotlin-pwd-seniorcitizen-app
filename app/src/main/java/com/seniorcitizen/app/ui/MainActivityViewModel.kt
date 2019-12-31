@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.seniorcitizen.app.data.model.AppAuthenticateResponse
-import com.seniorcitizen.app.data.model.SeniorCitizen
+import com.seniorcitizen.app.data.model.Entity
 import com.seniorcitizen.app.data.repository.SeniorCitizenRepository
 import com.seniorcitizen.app.ui.login.LoginCallback
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -23,12 +23,12 @@ class MainActivityViewModel @Inject constructor(private val seniorCitizenReposit
     fun init(loginCallback: LoginCallback) {
         this.loginCallback = loginCallback
     }
-    var seniorCitizenResult: MutableLiveData<List<SeniorCitizen>> = MutableLiveData()
+    var seniorCitizenResult: MutableLiveData<List<Entity.SeniorCitizen>> = MutableLiveData()
     var seniorCitizenError: MutableLiveData<String> = MutableLiveData()
     var seniorCitizenLoader: MutableLiveData<Boolean> = MutableLiveData()
-    private lateinit var disposableObserver: DisposableObserver<List<SeniorCitizen>>
+    private lateinit var disposableObserver: DisposableObserver<List<Entity.SeniorCitizen>>
 
-    fun seniorCitizenResult(): LiveData<List<SeniorCitizen>> = seniorCitizenResult
+    fun seniorCitizenResult(): LiveData<List<Entity.SeniorCitizen>> = seniorCitizenResult
     fun seniorCitizenError(): LiveData<String> = seniorCitizenError
     fun seniorCitizenLoader(): LiveData<Boolean> = seniorCitizenLoader
 
@@ -69,12 +69,12 @@ class MainActivityViewModel @Inject constructor(private val seniorCitizenReposit
 
     fun loadSeniorCitizens(){
 
-        disposableObserver = object : DisposableObserver<List<SeniorCitizen>>(){
+        disposableObserver = object : DisposableObserver<List<Entity.SeniorCitizen>>(){
             override fun onComplete() {
 
             }
 
-            override fun onNext(t: List<SeniorCitizen>) {
+            override fun onNext(t: List<Entity.SeniorCitizen>) {
                 seniorCitizenResult.postValue(t)
                 seniorCitizenLoader.postValue(false)
             }
@@ -93,7 +93,7 @@ class MainActivityViewModel @Inject constructor(private val seniorCitizenReposit
     }
 
     fun disposeElements(){
-        if(!disposableObserver.isDisposed) disposableObserver.dispose()
+        // if(!disposableObserver.isDisposed) disposableObserver.dispose()
         if(!disposableAuthenticateObserver.isDisposed) disposableAuthenticateObserver.dispose()
     }
 }

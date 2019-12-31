@@ -3,8 +3,9 @@ package com.seniorcitizen.app.ui.login
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.seniorcitizen.app.data.model.SeniorCitizen
+import com.seniorcitizen.app.data.model.Entity
 import com.seniorcitizen.app.data.repository.SeniorCitizenRepository
+import com.seniorcitizen.app.utils.Validator
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
@@ -20,15 +21,17 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
     fun init(loginCallback: LoginCallback) {
         this.loginCallback = loginCallback
     }
-    var seniorCitizenResult: MutableLiveData<List<SeniorCitizen>> = MutableLiveData()
+
+    private val validator = Validator()
+    var seniorCitizenResult: MutableLiveData<List<Entity.SeniorCitizen>> = MutableLiveData()
     var seniorCitizenError: MutableLiveData<String> = MutableLiveData()
     var seniorCitizenLoader: MutableLiveData<Boolean> = MutableLiveData()
 
-    fun seniorCitizenResult(): LiveData<List<SeniorCitizen>> = seniorCitizenResult
+    fun seniorCitizenResult(): LiveData<List<Entity.SeniorCitizen>> = seniorCitizenResult
     fun seniorCitizenError(): LiveData<String> = seniorCitizenError
     fun seniorCitizenLoader(): LiveData<Boolean> = seniorCitizenLoader
 
-    private lateinit var disposableObserver: DisposableObserver<List<SeniorCitizen>>
+    private lateinit var disposableObserver: DisposableObserver<List<Entity.SeniorCitizen>>
 
     private val _onProgressBar = MutableLiveData<Boolean>()
     fun onProgressBar() = _onProgressBar as LiveData<Boolean>
@@ -39,25 +42,36 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
     private val _isErrorPassword = MutableLiveData<Boolean>()
     fun isErrorPassword() = _isErrorPassword as LiveData<Boolean>
 
-    // fun watchFieldEmail(text: CharSequence?) { _isErrorEmail.value = !Patterns.EMAIL_ADDRESS.matcher(text).matches() }
-    // fun watchFieldPassword(text: CharSequence?) { _isErrorPassword.value = text.let { it != null && it.isEmpty() } }
+    fun watchFieldUserName(text: CharSequence?) { _isErrorUserName.value = text?.let { validator.isValidName(it) } }
+    fun watchFieldPassword(text: CharSequence?) { _isErrorPassword.value = text?.let { validator.isValidPassword(it) }
+    }
 
-    fun doLogin(user : SeniorCitizen){
+    fun doLogin(user : Entity.SeniorCitizen){
         if (contentFillValidate(user)){
             _onProgressBar.value = true
 
-            disposableObserver = object : DisposableObserver<List<SeniorCitizen>>(){
+            disposableObserver = object : DisposableObserver<List<Entity.SeniorCitizen>>(){
                 override fun onComplete() {
                 }
 
-                override fun onNext(t: List<SeniorCitizen>) {
+                override fun onNext(t: List<Entity.SeniorCitizen>) {
                     seniorCitizenResult.postValue(t)
                     seniorCitizenLoader.postValue(false)
+                    _onProgressBar.postValue(false)
+
+                    if(t.isNotEmpty()){
+                        loginCallback.onSuccess()
+                    }else{
+                        loginCallback.onFailure("No User Found.")
+                    }
                 }
 
                 override fun onError(e: Throwable) {
+
                     seniorCitizenError.postValue(e.message)
                     seniorCitizenLoader.postValue(false)
+                    _onProgressBar.postValue(false)
+                    loginCallback.onFailure(e.message)
                 }
 
             }
@@ -72,7 +86,7 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
             }
     }
 
-    private fun contentFillValidate(user: SeniorCitizen): Boolean {
+    private fun contentFillValidate(user: Entity.SeniorCitizen): Boolean {
         if (user.username.let { it != null})
             if (user.password.let { it != null && it.isNotEmpty() })
                 return true

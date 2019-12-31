@@ -10,7 +10,10 @@
     <string name="email">Email</string>
     <string name="username">UserName</string>
     <string name="error_email">Invalid email!</string>
-    <string name="error_username">Invalid username!</string>
+    <string name="error_username">Invalid! Username too short.</string>
+    <string name="error_password_policy">Password should be minimum 5 characters long,\n
+        |should contain at least one capital letter,\n
+        |at least one small letter</string>
     <string name="ok">OK</string>
     <string name="ScanDialogTitle">Scan Complete</string>
     <string name="ScanDialogFailedTitle">Scan Failed</string>
@@ -33,6 +36,7 @@
     <string name="contact_us">Contact us</string>
     <string name="activate_account">Activate Account</string>
     <string name="registration_success">Registration Successfully!</string>
+    <string name="login_success">Login Successfully!</string>
     <string name="error_registration_account_with_same_email_already_exist">Account with the same email is already exist!</string>
     <string name="error_login_email_is_not_registered">Email is not Registered!</string>
     <string name="error_login_wrong_password">Wrong password!</string>

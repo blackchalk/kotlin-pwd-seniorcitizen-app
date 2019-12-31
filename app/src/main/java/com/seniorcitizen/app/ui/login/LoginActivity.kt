@@ -1,38 +1,44 @@
 package com.seniorcitizen.app.ui.login
 
 import android.os.Bundle
-import android.view.View
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.seniorcitizen.app.R
-import com.seniorcitizen.app.data.model.SeniorCitizen
+import com.seniorcitizen.app.data.model.Entity
 import com.seniorcitizen.app.databinding.ActivityLoginBinding
 import com.seniorcitizen.app.ui.base.BaseActivity
+import com.seniorcitizen.app.ui.home.HomeActivity
 import com.seniorcitizen.app.ui.register.RegisterActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import timber.log.Timber
+import javax.inject.Inject
 
 class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginCallback{
 
-    private val viewModel by lazy {
-        ViewModelProviders.of(this@LoginActivity, viewModelFactory)[LoginViewModel::class.java]
-            .apply { init(this@LoginActivity) }
-    }
+    @Inject
+    lateinit var viewModel: LoginViewModel
+
+    // private val viewModel by lazy {
+    //     ViewModelProviders.of(this@LoginActivity, viewModelFactory)[LoginViewModel::class.java]
+    //         .apply { init(this@LoginActivity) }
+    // }
+
+    override fun getContentView(): Int = R.layout.activity_login
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        btn_login.setOnClickListener {
-            progress_bar.visibility = View.VISIBLE
-            login()
+        viewModel.apply { init(this@LoginActivity) }
+
+        getBinding()?.let {
+            it.viewModel = viewModel
+            it.user = Entity.SeniorCitizen()
         }
 
-        viewModel.seniorCitizenResult().observe(this,Observer<List<SeniorCitizen>>{
+        viewModel.seniorCitizenResult().observe(this,Observer<List<Entity.SeniorCitizen>>{
             if (it!=null){
                 Timber.e(it.size.toString())
-                progress_bar.visibility = View.GONE
             }
         })
 
@@ -43,39 +49,28 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginCallback{
         })
 
         viewModel.seniorCitizenLoader().observe(this, Observer<Boolean>{
-            if(it == false) progress_bar.visibility = View.GONE
+            // if(it == false) progress_bar.visibility = View.GONE
         })
     }
 
-    private fun login(){
-        viewModel.doLogin(SeniorCitizen( username = et_username?.text.toString(),password = et_password?.text.toString()))
-    }
-
-    override fun getContentView(): Int = R.layout.activity_login
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         iv_back.setOnClickListener {
-            // startActivity<MainActivity>()
+            // pop to last stack
             finish()
         }
         tv_to_register.setOnClickListener { startActivity<RegisterActivity>() }    }
 
     override fun onSuccess() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        onToastMessage(getString(R.string.login_success))
+        toHomePage()
     }
 
-    override fun onFailure(responseMessage: String?, responseCode: Int) {
-        when (responseCode) {
-
-            401 -> {
-                onToastMessage(getString(R.string.error_401))
-            }
-
-            406 -> onToastMessage(getString(R.string.error_login_wrong_password))
-
-            400 -> onToastMessage(getString(R.string.error_login_email_is_not_registered))
-
-            else -> onToastMessage(responseMessage)
+    override fun onFailure(responseMessage: String?) {
+        onToastMessage(responseMessage)
     }
-}
+
+    private fun toHomePage() {
+        startActivity<HomeActivity>()
+        finish()
+    }
 }

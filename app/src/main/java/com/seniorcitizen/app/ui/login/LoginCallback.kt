@@ -5,5 +5,5 @@ package com.seniorcitizen.app.ui.login
  */
 interface LoginCallback {
     fun onSuccess()
-    fun onFailure(responseMessage: String?, responseCode: Int)
+    fun onFailure(responseMessage: String?)
 }
