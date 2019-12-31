@@ -1,6 +1,7 @@
 package com.seniorcitizen.app.ui.login
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.seniorcitizen.app.R
 import com.seniorcitizen.app.data.model.Entity
@@ -8,21 +9,17 @@ import com.seniorcitizen.app.databinding.ActivityLoginBinding
 import com.seniorcitizen.app.ui.base.BaseActivity
 import com.seniorcitizen.app.ui.home.HomeActivity
 import com.seniorcitizen.app.ui.register.RegisterActivity
+import com.seniorcitizen.app.utils.Constants
 import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import timber.log.Timber
-import javax.inject.Inject
 
 class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginCallback{
 
-    @Inject
-    lateinit var viewModel: LoginViewModel
-
-    // private val viewModel by lazy {
-    //     ViewModelProviders.of(this@LoginActivity, viewModelFactory)[LoginViewModel::class.java]
-    //         .apply { init(this@LoginActivity) }
-    // }
+    private val viewModel: LoginViewModel by viewModels {
+        viewModelFactory
+    }
 
     override fun getContentView(): Int = R.layout.activity_login
 
@@ -70,7 +67,13 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginCallback{
     }
 
     private fun toHomePage() {
-        startActivity<HomeActivity>()
+        startActivity<HomeActivity>(Constants.INTENT_KEY to getBinding()?.viewModel?.getLoggedInUser())
         finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        viewModel.disposeElements()
     }
 }

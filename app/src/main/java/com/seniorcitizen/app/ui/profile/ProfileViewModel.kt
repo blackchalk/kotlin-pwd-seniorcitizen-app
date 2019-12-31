@@ -1,8 +1,8 @@
 package com.seniorcitizen.app.ui.profile
 
 import androidx.lifecycle.ViewModel
+import com.seniorcitizen.app.data.model.Entity
 import com.seniorcitizen.app.data.repository.SeniorCitizenRepository
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -10,8 +10,16 @@ import javax.inject.Inject
  */
 class ProfileViewModel@Inject constructor(val seniorCitizenRepository: SeniorCitizenRepository) : ViewModel()  {
 
-    fun test(){
-        Timber.i("test")
+    private var fullName = "Test T Something 123 sample .."
 
+    fun setUser(model: Entity.SeniorCitizen){
+        val builder = model.firstName.plus(" "+model.middleName).plus(" "+model.lastName)
+        this.fullName = builder
     }
+
+    fun getUserFullName() : String {
+        val t = this.fullName
+        return t
+    }
+
 }

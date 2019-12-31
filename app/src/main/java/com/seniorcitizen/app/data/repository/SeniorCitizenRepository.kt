@@ -31,6 +31,10 @@ class SeniorCitizenRepository @Inject constructor(
         return getSenior(user, pw)
     }
 
+    fun getSeniorById(id: String): Observable<List<Entity.SeniorCitizen>>{
+        return getSeniorByIDNumber(id)
+    }
+
     fun getAllSenior(appToken: String): Observable<List<Entity.SeniorCitizen>> {
 
         val hasConnection = utils.isConnectedToInternet()
@@ -95,11 +99,8 @@ class SeniorCitizenRepository @Inject constructor(
             }
     }
 
-    private fun getSeniorByID(id: String): Observable<List<Entity.SeniorCitizen>> {
+    private fun getSeniorByIDNumber(id: String): Observable<List<Entity.SeniorCitizen>> {
         return seniorCitizenDao.getSeniorCitizenByIdNumber(id)
-            .doOnNext {
-                Timber.e(it.size.toString())
-            }
     }
     //
     // private fun getTransactions(token: String): Observable<List<Transaction>>{

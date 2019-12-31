@@ -12,5 +12,6 @@ class Constants {
         const val LIST_SCROLLING = 12
         const val SPLASH_TIME = 3000L
         var APP_TOKEN = ""
+        const val INTENT_KEY = "USER_ID"
     }
 }
