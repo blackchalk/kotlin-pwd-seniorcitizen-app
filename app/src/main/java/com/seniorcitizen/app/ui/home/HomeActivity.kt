@@ -5,7 +5,6 @@ import android.content.res.Resources
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -15,7 +14,6 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.seniorcitizen.app.R
-import com.seniorcitizen.app.data.model.Entity
 import com.seniorcitizen.app.databinding.ActivityHomeBinding
 import com.seniorcitizen.app.ui.base.BaseActivity
 import com.seniorcitizen.app.utils.Constants
@@ -53,8 +51,6 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 
 		if (extra != null) {
 			viewModel.getUserIdNumber(extra)
-			val test = viewModel.currentUser()
-			Timber.e("%s",test)
 		}
 
 		getBinding()?.let {
@@ -63,11 +59,11 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 
 		viewModel.doRequetUser()
 
-		viewModel.seniorCitizenResult.observe(this, Observer<List<Entity.SeniorCitizen>>{
-			if (it.isNotEmpty()){
-				Timber.i("%s", it[0])
-			}
-		})
+		// viewModel.seniorCitizenResult.observe(this, Observer<List<Entity.SeniorCitizen>>{
+		// 	if (it.isNotEmpty()){
+		//
+		// 	}
+		// })
 	}
 
 	private fun checkPermission() {

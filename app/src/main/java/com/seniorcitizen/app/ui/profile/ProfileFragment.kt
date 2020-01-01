@@ -51,7 +51,7 @@ class ProfileFragment: BaseFragment<FragmentProfileBinding, ProfileViewModel>() 
 						tv_address.text = item.address
 						tv_birthday.text = homeActivityViewModel?.formatBirthday(item.birthday)
 						tv_sex.text = item.sex
-						tv_age.text = homeActivityViewModel?.getAge(item.birthday)
+						tv_age.text = homeActivityViewModel?.getAge(item.birthday).toString().removeRange(0,2) // formatting and removing first two substring
 						tv_id_number.text = item.idNumber
 					}
 				})

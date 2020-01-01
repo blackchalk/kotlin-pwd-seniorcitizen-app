@@ -8,6 +8,7 @@ import com.seniorcitizen.app.data.repository.SeniorCitizenRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -97,15 +98,14 @@ class HomeActivityViewModel@Inject constructor(private val seniorCitizenReposito
 
     fun getAge(
         stringDate: String?
-    ): String? {
+    ): Int? {
 
         val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
         val date = parser.parse(stringDate!!)
 
-
         val year: Int? = date?.year
         val month: Int? = date?.month
-        var day: Int? = date?.day
+        val day: Int? = date?.day
 
         //calculating age from dob
         val dob: Calendar = Calendar.getInstance()
@@ -115,6 +115,8 @@ class HomeActivityViewModel@Inject constructor(private val seniorCitizenReposito
         if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
             age--
         }
-        return age.toString()
+        Timber.i("%s/year-%s,month-%s,day-%s",date,year,month,day)
+        Timber.i("%s",age)
+        return age
     }
 }
