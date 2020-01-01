@@ -8,6 +8,9 @@ import com.seniorcitizen.app.data.repository.SeniorCitizenRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -24,10 +27,6 @@ class HomeActivityViewModel@Inject constructor(private val seniorCitizenReposito
     private lateinit var userIDNumber: String
     fun getUserIdNumber(number: String) { this.userIDNumber = number }
 
-    fun currentUser() : String{
-        return userIDNumber
-    }
-
     var seniorCitizenResult: MutableLiveData<List<Entity.SeniorCitizen>> = MutableLiveData()
     var seniorCitizenError: MutableLiveData<String> = MutableLiveData()
     var seniorCitizenLoader: MutableLiveData<Boolean> = MutableLiveData()
@@ -38,7 +37,6 @@ class HomeActivityViewModel@Inject constructor(private val seniorCitizenReposito
 
     private lateinit var disposableObserver: DisposableObserver<List<Entity.SeniorCitizen>>
 
-
     private val _onProgressBar = MutableLiveData<Boolean>()
     fun onProgressBar() = _onProgressBar as LiveData<Boolean>
 
@@ -46,7 +44,7 @@ class HomeActivityViewModel@Inject constructor(private val seniorCitizenReposito
     fun isNoMatchFound() = _isNoMatchFound as LiveData<Boolean>
 
     fun doRequetUser(){
-        if (currentUser().isNotEmpty()){
+        if (userIDNumber.isNotEmpty()){
 
             _onProgressBar.value = true
 
@@ -74,7 +72,7 @@ class HomeActivityViewModel@Inject constructor(private val seniorCitizenReposito
                 }
 
             }
-            val str = currentUser()
+            val str = userIDNumber
             seniorCitizenRepository.getSeniorById(str)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -86,5 +84,37 @@ class HomeActivityViewModel@Inject constructor(private val seniorCitizenReposito
 
     fun disposeElements(){
         if(!disposableObserver.isDisposed) disposableObserver.dispose()
+    }
+
+    fun formatBirthday(stringDate: String?): String{
+        // convert birthday
+        val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)//model.birthday.toString(), Locale.US
+        val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.US)
+
+        return formatter.format(parser.parse(stringDate))
+
+    }
+
+    fun getAge(
+        stringDate: String?
+    ): String? {
+
+        val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
+        val date = parser.parse(stringDate!!)
+
+
+        val year: Int? = date?.year
+        val month: Int? = date?.month
+        var day: Int? = date?.day
+
+        //calculating age from dob
+        val dob: Calendar = Calendar.getInstance()
+        val today: Calendar = Calendar.getInstance()
+        dob.set(year!!, month!!, day!!)
+        var age: Int = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR)
+        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
+            age--
+        }
+        return age.toString()
     }
 }
