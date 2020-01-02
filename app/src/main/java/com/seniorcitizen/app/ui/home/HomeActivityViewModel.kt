@@ -26,7 +26,7 @@ class HomeActivityViewModel@Inject constructor(private val seniorCitizenReposito
         this.homeCallback = homeCallback
     }
     private lateinit var userIDNumber: String
-    fun getUserIdNumber(number: String) { this.userIDNumber = number }
+    fun setUserIdNumber(number: String) { this.userIDNumber = number }
 
     var seniorCitizenResult: MutableLiveData<List<Entity.SeniorCitizen>> = MutableLiveData()
     var seniorCitizenError: MutableLiveData<String> = MutableLiveData()

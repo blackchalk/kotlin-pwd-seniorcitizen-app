@@ -50,7 +50,7 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 		viewModel.apply { init(this@HomeActivity) }
 
 		if (extra != null) {
-			viewModel.getUserIdNumber(extra)
+			viewModel.setUserIdNumber(extra)
 		}
 
 		getBinding()?.let {
@@ -59,13 +59,9 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 
 		viewModel.doRequetUser()
 
-		// viewModel.seniorCitizenResult.observe(this, Observer<List<Entity.SeniorCitizen>>{
-		// 	if (it.isNotEmpty()){
-		//
-		// 	}
-		// })
 	}
 
+	// asks user for permissions for camera and read/write storage
 	private fun checkPermission() {
 		val rxPermissions = RxPermissions(this) // where this is an Activity or Fragment instance
 
@@ -84,6 +80,7 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 			}
 	}
 
+	// prepare the bottom navigation and navigation controllers
 	private fun init() {
 
 		val host: NavHostFragment = supportFragmentManager
@@ -105,7 +102,6 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 				Integer.toString(destination.id)
 			}
 
-			// Toast.makeText(this@HomeActivity, "Navigated to $dest", Toast.LENGTH_SHORT).show()
 			Timber.i( "Navigated to $dest")
 		}
 	}
@@ -130,7 +126,6 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 		if (!disposable.isDisposed){
 			disposable.dispose()
 		}
-
 		viewModel.disposeElements()
 	}
 

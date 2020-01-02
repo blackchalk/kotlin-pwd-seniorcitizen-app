@@ -3,10 +3,14 @@ package com.seniorcitizen.app.data.repository
 import com.seniorcitizen.app.data.model.AppAuthenticateRequest
 import com.seniorcitizen.app.data.model.AppAuthenticateResponse
 import com.seniorcitizen.app.data.model.Entity
+import com.seniorcitizen.app.data.model.Transaction
+import com.seniorcitizen.app.data.model.UserTransactionRequest
 import com.seniorcitizen.app.data.remote.ApiInterface
 import com.seniorcitizen.app.persistence.dao.SeniorCitizenDao
+import com.seniorcitizen.app.utils.Constants
 import com.seniorcitizen.app.utils.Utils
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -25,6 +29,7 @@ class SeniorCitizenRepository @Inject constructor(
 ) {
 
     var request: AppAuthenticateRequest? = null
+    var appAuthResponse: AppAuthenticateResponse? = null
 
     fun getSeniorLogin(user: String, pw: String): Observable<List<Entity.SeniorCitizen>> {
 
@@ -37,7 +42,7 @@ class SeniorCitizenRepository @Inject constructor(
 
     fun getAllSenior(appToken: String): Observable<List<Entity.SeniorCitizen>> {
 
-        val hasConnection = utils.isConnectedToInternet()
+        // val hasConnection = utils.isConnectedToInternet()
 
         val observableFromApi: Observable<List<Entity.SeniorCitizen>>?
 
@@ -51,6 +56,13 @@ class SeniorCitizenRepository @Inject constructor(
         return observableFromApi
     }
 
+    fun getAllTransactions(user: UserTransactionRequest): Single<List<Transaction>>{
+
+        val observableTransactionApi: Single<List<Transaction>> = getTransactionBySeniorCitizenID(Constants.APP_TOKEN,user)
+
+        return observableTransactionApi
+    }
+
     fun authenticateApp(username: String, password: String): Observable<AppAuthenticateResponse> {
 
         val hasConnection = utils.isConnectedToInternet()
@@ -62,6 +74,11 @@ class SeniorCitizenRepository @Inject constructor(
         if (hasConnection) {
             observableAppAuth = apiInterface.authenticateApp(request!!)
                 .doOnNext { it.token?.let { it1 ->
+                    // set member variable
+                    appAuthResponse = it
+                    Constants.APP_TOKEN = it.token
+                    Timber.i("%s", appAuthResponse)
+                    // get api call
                     getAllSenior(it1)
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -70,7 +87,10 @@ class SeniorCitizenRepository @Inject constructor(
                 } }
         }
         return observableAppAuth!!
+    }
 
+    private fun getTransactionBySeniorCitizenID(token: String, user: UserTransactionRequest) : Single<List<Transaction>>{
+        return apiInterface.getUserTransactions("Bearer "+ token, user)
     }
 
     private fun getSeniorCitizensFromApi(token : String): Observable<List<Entity.SeniorCitizen>> {
@@ -78,7 +98,6 @@ class SeniorCitizenRepository @Inject constructor(
         return apiInterface.getAllSenior("Bearer " + token)
             .doOnNext {
                 for (item in it) {
-                    Timber.i("insertSeniorCitizen:%s",item.firstName)
                     seniorCitizenDao.insertSeniorCitizen(item)
                 }
             }
@@ -102,8 +121,4 @@ class SeniorCitizenRepository @Inject constructor(
     private fun getSeniorByIDNumber(id: String): Observable<List<Entity.SeniorCitizen>> {
         return seniorCitizenDao.getSeniorCitizenByIdNumber(id)
     }
-    //
-    // private fun getTransactions(token: String): Observable<List<Transaction>>{
-    //     return apiInterface.getUserTransactions()
-    // }
 }

@@ -16,13 +16,9 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class MainActivity : BaseActivity<ActivityMainBinding>(){
+
     @Inject
     lateinit var mainActivityViewModel : MainActivityViewModel
-
-    // private val mainActivityViewModel by lazy {
-    //     ViewModelProviders.of(this@MainActivity, viewModelFactory)[MainActivityViewModel::class.java]
-    //         .apply { init(this@MainActivity) }
-    // }
 
     override fun getContentView(): Int = R.layout.activity_main
 
@@ -45,7 +41,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(){
 
         mainActivityViewModel.appAuthenticateResult().observe(this, Observer<AppAuthenticateResponse>{
             if (it!=null){
-                Timber.e("%s,mainActivityViewModel",it.toString())
                 progress_bar.visibility = View.GONE
             }
         })
@@ -59,38 +54,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>(){
         mainActivityViewModel.appLoader().observe(this, Observer<Boolean>{
             if(it == false) progress_bar.visibility = View.GONE
         })
-
-        // loadAllSenior()
-        //
-        // mainActivityViewModel.seniorCitizenResult().observe(this, Observer<List<SeniorCitizen>>{
-        //     if (it!=null){
-        //         Timber.e(it.size.toString())
-        //     }
-        // })
-        //
-        // mainActivityViewModel.seniorCitizenError().observe(this, Observer<String> {
-        //     if (it!=null){
-        //         toast(resources.getString(R.string.error_401) + it)
-        //     }
-        // })
-        //
-        // mainActivityViewModel.seniorCitizenLoader().observe(this, Observer<Boolean>{
-        //     if(it == false) progress_bar.visibility = View.GONE
-        // })
-
     }
 
+    // Authenticate the app and get users
     private fun getAppAuthAndUsers(){
         mainActivityViewModel.loadToken()
     }
 
-    private fun loadAllSenior(){
-      mainActivityViewModel.loadSeniorCitizens()
-    }
-
     override fun onDestroy() {
-        mainActivityViewModel.disposeElements()
-
         super.onDestroy()
+        mainActivityViewModel.disposeElements()
     }
 }
