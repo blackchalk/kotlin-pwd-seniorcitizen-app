@@ -30,7 +30,7 @@ class NetModule {
     fun provideLoggingInterceptor(): HttpLoggingInterceptor {
         val interceptor = HttpLoggingInterceptor(
             HttpLoggingInterceptor.Logger { message -> Timber.tag("NETWORK: ").i(message) })
-            interceptor.level = HttpLoggingInterceptor.Level.BASIC
+            interceptor.level = HttpLoggingInterceptor.Level.BODY
         return interceptor
     }
 

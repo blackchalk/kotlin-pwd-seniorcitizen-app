@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import com.seniorcitizen.app.data.model.AppAuthenticateResponse
 import com.seniorcitizen.app.data.model.Entity
 import com.seniorcitizen.app.data.repository.SeniorCitizenRepository
-import com.seniorcitizen.app.ui.login.LoginCallback
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
@@ -19,10 +18,6 @@ import javax.inject.Inject
  */
 class MainActivityViewModel @Inject constructor(private val seniorCitizenRepository: SeniorCitizenRepository) : ViewModel() {
 
-    private lateinit var loginCallback: LoginCallback
-    fun init(loginCallback: LoginCallback) {
-        this.loginCallback = loginCallback
-    }
     var seniorCitizenResult: MutableLiveData<List<Entity.SeniorCitizen>> = MutableLiveData()
     var seniorCitizenError: MutableLiveData<String> = MutableLiveData()
     var seniorCitizenLoader: MutableLiveData<Boolean> = MutableLiveData()
@@ -65,31 +60,6 @@ class MainActivityViewModel @Inject constructor(private val seniorCitizenReposit
             .observeOn(AndroidSchedulers.mainThread())
             .debounce(400,TimeUnit.MILLISECONDS)
             .subscribe(disposableAuthenticateObserver)
-    }
-
-    fun loadSeniorCitizens(){
-
-        disposableObserver = object : DisposableObserver<List<Entity.SeniorCitizen>>(){
-            override fun onComplete() {
-
-            }
-
-            override fun onNext(t: List<Entity.SeniorCitizen>) {
-                seniorCitizenResult.postValue(t)
-                seniorCitizenLoader.postValue(false)
-            }
-
-            override fun onError(e: Throwable) {
-                seniorCitizenError.postValue(e.message)
-                seniorCitizenLoader.postValue(false)
-            }
-        }
-
-        seniorCitizenRepository.getAllSenior("sample")
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .debounce(400,TimeUnit.MILLISECONDS)
-            .subscribe(disposableObserver)
     }
 
     fun disposeElements(){

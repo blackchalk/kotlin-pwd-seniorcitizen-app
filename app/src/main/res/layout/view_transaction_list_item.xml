@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <TextView
+        android:id="@+id/tv_store_name"
+        android:fontFamily="serif"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:textSize="@dimen/md_listitem_textsize"
+        android:textColor="#000"
+        android:text="Store Name"/>
+    <TextView
+        android:id="@+id/tv_id_number"
+        android:textColor="#000"
+        android:fontFamily="serif"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:textSize="@dimen/md_listitem_textsize"
+        android:text="1"/>
+    <TextView
+        android:textColor="#000"
+        android:id="@+id/tv_quantity"
+        android:fontFamily="serif"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:textSize="@dimen/md_listitem_textsize"
+        android:text="20"/>
+    <TextView
+        android:textColor="#000"
+        android:id="@+id/tv_date"
+        android:fontFamily="serif"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:textSize="@dimen/md_listitem_textsize"
+        android:text="2020-01-01"/>
+</LinearLayout>
