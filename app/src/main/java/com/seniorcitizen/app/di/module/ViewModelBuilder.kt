@@ -7,6 +7,7 @@ import com.seniorcitizen.app.ui.MainActivityViewModel
 import com.seniorcitizen.app.ui.home.HomeActivityViewModel
 import com.seniorcitizen.app.ui.login.LoginViewModel
 import com.seniorcitizen.app.ui.profile.ProfileViewModel
+import com.seniorcitizen.app.ui.register.RegisterViewModel
 import com.seniorcitizen.app.ui.scan.ScanViewModel
 import com.seniorcitizen.app.ui.transaction.TransactionViewModel
 import com.seniorcitizen.app.utils.ViewModelFactoryUtil
@@ -53,5 +54,10 @@ abstract class ViewModelBuilder {
     @IntoMap
     @ViewModelKey(ScanViewModel::class)
     internal abstract fun bindScanViewModel(scanViewModel: ScanViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(RegisterViewModel::class)
+    internal abstract fun bindRegisterViewModel(registerViewModel: RegisterViewModel): ViewModel
 
 }

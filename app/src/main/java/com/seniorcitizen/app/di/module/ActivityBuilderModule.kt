@@ -3,6 +3,7 @@ package com.seniorcitizen.app.di.module
 import com.seniorcitizen.app.ui.MainActivity
 import com.seniorcitizen.app.ui.home.HomeActivity
 import com.seniorcitizen.app.ui.login.LoginActivity
+import com.seniorcitizen.app.ui.register.RegisterActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -25,5 +26,7 @@ abstract class ActivityBuilderModule {
 
     @ContributesAndroidInjector
     abstract fun contributeHomeActivity(): HomeActivity
+
+    abstract fun contributeRegisterActivity(): RegisterActivity
 
 }
