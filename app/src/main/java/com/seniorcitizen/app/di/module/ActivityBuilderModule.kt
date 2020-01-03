@@ -27,6 +27,7 @@ abstract class ActivityBuilderModule {
     @ContributesAndroidInjector
     abstract fun contributeHomeActivity(): HomeActivity
 
+    @ContributesAndroidInjector
     abstract fun contributeRegisterActivity(): RegisterActivity
 
 }
