@@ -73,7 +73,5 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginCallback{
 
     override fun onDestroy() {
         super.onDestroy()
-
-        viewModel.disposeElements()
     }
 }

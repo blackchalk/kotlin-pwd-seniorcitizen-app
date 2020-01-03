@@ -63,6 +63,11 @@ class SeniorCitizenRepository @Inject constructor(
         return observableTransactionApi
     }
 
+    fun getTransactionById(id: Int): Single<List<Transaction>>{
+        val observable: Single<List<Transaction>> = getTransactionByTransactionid(Constants.APP_TOKEN,id)
+        return observable
+    }
+
     fun authenticateApp(username: String, password: String): Observable<AppAuthenticateResponse> {
 
         val hasConnection = utils.isConnectedToInternet()
@@ -90,7 +95,11 @@ class SeniorCitizenRepository @Inject constructor(
     }
 
     private fun getTransactionBySeniorCitizenID(token: String, user: UserTransactionRequest) : Single<List<Transaction>>{
-        return apiInterface.getUserTransactions("Bearer "+ token, user)
+        return apiInterface.getUserTransactions("Bearer "+ token, user.SeniorCitizenID!!)
+    }
+
+    private fun getTransactionByTransactionid(token: String,transactionId: Int): Single<List<Transaction>>{
+        return apiInterface.getTransactionByTransationId("Bearer "+token,transactionId)
     }
 
     private fun getSeniorCitizensFromApi(token : String): Observable<List<Entity.SeniorCitizen>> {

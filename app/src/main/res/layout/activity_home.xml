@@ -44,7 +44,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/progress_bar"
-            app:layout_constraintBottom_toBottomOf="@id/ll_nav_page"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_nav_view"
             app:defaultNavHost="true"
             app:navGraph="@navigation/mobile_navigation"/>
 
@@ -52,55 +52,11 @@
             android:id="@+id/bottom_nav_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/nav_host_fragment"
-            app:layout_constraintBottom_toBottomOf="@id/ll_nav_page"
-            app:menu="@menu/bottom_nav_menu" />
-
-        <LinearLayout
-            android:id="@+id/ll_nav_page"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_secondary"
-            android:layout_marginEnd="@dimen/margin_secondary"
-            android:layout_marginBottom="@dimen/margin_primary"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/ll_terms"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0">
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_terms"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0">
-
-            <TextView
-                style="@style/TextPrimaryCaptionStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/starter_service_msg" />
-
-            <TextView
-                android:id="@+id/tv_to_terms"
-                style="@style/TextPrimaryCaptionStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_spacing"
-                android:fontFamily="@font/source_sans_pro_regular"
-                android:text="@string/terms_of_service"
-                android:textColor="@color/colorPrimary"
-                android:textStyle="bold" />
-
-        </LinearLayout>
+            app:layout_constraintVertical_bias="1.0"
+            app:menu="@menu/bottom_nav_menu" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
