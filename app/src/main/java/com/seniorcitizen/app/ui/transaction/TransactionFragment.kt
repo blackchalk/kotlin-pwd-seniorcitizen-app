@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.list.listItems
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.seniorcitizen.app.R
 import com.seniorcitizen.app.data.model.Transaction
@@ -99,7 +101,33 @@ class TransactionFragment: BaseFragment<FragmentTransactionsBinding, Transaction
 	}
 
 	override fun onTransactionSelected(transaction: Transaction?) {
-		//TODO show a dialog of items
+
 		Timber.i("%s",transaction)
+
+		val create = ArrayList<CharSequence>()
+
+		val detaillist = transaction?.transactionDetail
+		if (detaillist != null) {
+			for(names in detaillist)
+			{
+				create.add(" "+names?.quantity+"\t"+names?.item)
+			}
+		}
+
+		context?.let {
+			val mD = MaterialDialog(it)
+				.title(R.string.ViewDialogTitle)
+				.show {
+					listItems( items = create)
+					message( text = "ORNumber: "+transaction?.orNumber+"\nTotal Items:"+transaction?.totalQuantity)
+					positiveButton(text = "OK") { dialog ->
+						dialog.dismiss()
+					}
+					negativeButton(text = "Close") { dialog ->
+						dialog.dismiss()
+					}
+				}
+			mD.show()
+		}
 	}
 }

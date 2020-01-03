@@ -16,6 +16,7 @@
         |at least one small letter</string>
     <string name="ok">OK</string>
     <string name="ScanDialogTitle">Scan Complete</string>
+    <string name="ViewDialogTitle">Transaction Details</string>
     <string name="ScanDialogFailedTitle">Scan Failed</string>
     <string name="cancel">Cancel</string>
     <string name="close">Close</string>
