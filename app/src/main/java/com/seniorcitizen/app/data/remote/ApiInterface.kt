@@ -4,7 +4,6 @@ import com.seniorcitizen.app.data.model.AppAuthenticateRequest
 import com.seniorcitizen.app.data.model.AppAuthenticateResponse
 import com.seniorcitizen.app.data.model.Entity
 import com.seniorcitizen.app.data.model.Transaction
-import com.seniorcitizen.app.data.model.UserTransactionRequest
 import io.reactivex.Observable
 import io.reactivex.Single
 import retrofit2.http.Body
@@ -12,6 +11,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 /**
  * Created by Nic Evans on 2019-12-10.
@@ -28,11 +28,15 @@ interface ApiInterface {
     @GET("api/senior/get")
     fun getAllSenior(@Header("Authorization") authToken: String): Observable<List<Entity.SeniorCitizen>>
 
-    //TODO api to be fixed
-    // @HTTP(method = "GET", path = "api/transaction/get", hasBody = true)
     @GET("api/transaction/get")
     fun getUserTransactions(
         @Header("Authorization") authToken: String
-        , @Body userTransactionRequest: UserTransactionRequest
+        , @Query("seniorCitizenId") id: Int
+    ): Single<List<Transaction>>
+
+    @GET("api/transaction/getbyid")
+    fun getTransactionByTransationId(
+        @Header("Authorization") authToken: String
+        , @Query("transactionid") id: Int
     ): Single<List<Transaction>>
 }

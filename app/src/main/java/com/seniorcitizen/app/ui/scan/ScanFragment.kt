@@ -4,11 +4,17 @@ import android.annotation.SuppressLint
 import android.graphics.PointF
 import android.os.Handler
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.list.listItems
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView
 import com.seniorcitizen.app.R
+import com.seniorcitizen.app.data.model.Transaction
 import com.seniorcitizen.app.databinding.FragmentScanBinding
 import com.seniorcitizen.app.ui.base.BaseFragment
 import com.seniorcitizen.app.utils.Utils
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.observers.DisposableSingleObserver
+import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -16,7 +22,7 @@ import javax.inject.Inject
 /**
  * Created by Nic Evans on 2019-12-20.
  */
-class ScanFragment: BaseFragment<FragmentScanBinding, ScanViewModel>(), QRCodeReaderView.OnQRCodeReadListener{
+class ScanFragment: BaseFragment<FragmentScanBinding, ScanViewModel>(), QRCodeReaderView.OnQRCodeReadListener, ScanCallback{
 
 	@Inject
 	lateinit var viewmodel: ScanViewModel
@@ -49,24 +55,52 @@ class ScanFragment: BaseFragment<FragmentScanBinding, ScanViewModel>(), QRCodeRe
 
 			Timber.d("onQRCodeRead: %s", text)
 
-			//TODO: do api call to get the transaction id
+			if (text != null) {
+				val disposable = CompositeDisposable()
 
-				context?.let {
-					val mD = MaterialDialog(it)
-						.title(R.string.ScanDialogTitle)
-						.show {
-							message( text = text.toString())
-							positiveButton(text = "OK") { dialog ->
-								dialog.dismiss()
-								qrdecoderview.setQRDecodingEnabled(true)
-							}
-							negativeButton(text = "Close") { dialog ->
-								dialog.dismiss()
-								qrdecoderview.setQRDecodingEnabled(true)
-							}
-						}
-					mD.show()
-				}
+				disposable.add(viewmodel.getTransactionById(text.toInt())
+					            .subscribeOn(Schedulers.io())
+					            .observeOn(AndroidSchedulers.mainThread())
+					            .subscribeWith(object :
+					                DisposableSingleObserver<List<Transaction>>() {
+
+					                override fun onSuccess(value: List<Transaction>) {
+										val create = ArrayList<CharSequence>()
+
+										val detaillist = value[0].transactionDetail
+										if (detaillist != null) {
+											for(names in detaillist)
+											{
+												create.add(" "+names?.quantity+"\t"+names?.item)
+											}
+										}
+
+										context?.let {
+											val mD = MaterialDialog(it)
+												.title(R.string.ScanDialogTitle)
+												.show {
+													listItems( items = create)
+													message( text = "ORNumber: "+value[0].orNumber+"\nTotal Items:"+value[0].totalQuantity)
+													positiveButton(text = "OK") { dialog ->
+														dialog.dismiss()
+														qrdecoderview.setQRDecodingEnabled(true)
+													}
+													negativeButton(text = "Close") { dialog ->
+														dialog.dismiss()
+														qrdecoderview.setQRDecodingEnabled(true)
+													}
+												}
+											mD.show()
+										}
+					                }
+
+					                override fun onError(e: Throwable) {
+
+					                }
+					            })
+					        )
+			}
+
 
 		}catch (e: Exception){
 
@@ -125,5 +159,13 @@ class ScanFragment: BaseFragment<FragmentScanBinding, ScanViewModel>(), QRCodeRe
 	override fun onDestroyView() {
 		super.onDestroyView()
 		qrdecoderview.stopCamera()
+	}
+
+	override fun onSuccess(transaction: Transaction) {
+		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+	}
+
+	override fun onFailure(responseMessage: String, responseCode: Int) {
+		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 	}
 }

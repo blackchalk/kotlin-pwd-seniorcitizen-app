@@ -102,7 +102,7 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
     }
 
     fun disposeElements(){
-        if(!disposableObserver.isDisposed) disposableObserver.dispose()
+
     }
 
     fun getLoggedInUser() : String? {

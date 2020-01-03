@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_marginTop="2dp"
+    android:layout_height="wrap_content">
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:paddingStart="4dp"
+    android:paddingEnd="4dp"
+    android:layout_height="@dimen/md_listitem_height"
+    android:weightSum="4">
     <TextView
         android:id="@+id/tv_store_name"
-        android:fontFamily="serif"
+        style="@style/TextPrimaryBodyStyle"
+        android:layout_gravity="center"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_weight="1"
@@ -15,7 +24,8 @@
     <TextView
         android:id="@+id/tv_id_number"
         android:textColor="#000"
-        android:fontFamily="serif"
+        style="@style/TextPrimaryBodyStyle"
+        android:layout_gravity="center"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_weight="1"
@@ -24,19 +34,22 @@
     <TextView
         android:textColor="#000"
         android:id="@+id/tv_quantity"
-        android:fontFamily="serif"
+        style="@style/TextPrimaryBodyStyle"
+        android:layout_gravity="center"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_weight="1"
+        android:layout_weight="1.1"
         android:textSize="@dimen/md_listitem_textsize"
         android:text="20"/>
     <TextView
         android:textColor="#000"
         android:id="@+id/tv_date"
-        android:fontFamily="serif"
+        style="@style/TextPrimaryBodyStyle"
+        android:layout_gravity="center"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_weight="1"
+        android:layout_weight="0.9"
         android:textSize="@dimen/md_listitem_textsize"
         android:text="2020-01-01"/>
 </LinearLayout>
+</androidx.cardview.widget.CardView>

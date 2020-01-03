@@ -2,7 +2,6 @@ package com.seniorcitizen.app
 
 import com.facebook.stetho.Stetho
 import com.seniorcitizen.app.di.component.DaggerAppComponent
-import com.squareup.leakcanary.LeakCanary
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
 import timber.log.Timber
@@ -20,10 +19,10 @@ class App : DaggerApplication(){
             Stetho.initializeWithDefaults(this)
         }
 
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            return
-        }
-        LeakCanary.install(this)
+        // if (LeakCanary.isInAnalyzerProcess(this)) {
+        //     return
+        // }
+        // LeakCanary.install(this)
 
     }
 

@@ -22,7 +22,7 @@ class TransactionListAdapter(
     val transactionSelectedListener: TransactionSelectedListener
 ): RecyclerView.Adapter<TransactionListAdapter.TransactionViewHolder>() {
 
-    lateinit var data: ArrayList<Transaction>
+    var data = ArrayList<Transaction>()
 
     init {
         viewModel.getTransactions().observe(lifecycleOwner, Observer { transactions ->
