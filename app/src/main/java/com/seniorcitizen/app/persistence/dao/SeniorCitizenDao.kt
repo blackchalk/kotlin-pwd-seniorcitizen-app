@@ -7,6 +7,7 @@ import androidx.room.Query
 import com.seniorcitizen.app.data.model.Entity
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.SingleObserver
 
 /**
  * Created by Nic Evans on 2019-12-10.
