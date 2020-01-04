@@ -41,23 +41,21 @@ class HomeActivityViewModel@Inject constructor(private val seniorCitizenReposito
     private val _onProgressBar = MutableLiveData<Boolean>()
     fun onProgressBar() = _onProgressBar as LiveData<Boolean>
 
-    private val _isNoMatchFound = MutableLiveData<Boolean>()
-    fun isNoMatchFound() = _isNoMatchFound as LiveData<Boolean>
 
-    fun doRequetUser(){
+    fun doRequestLoggedInUser(){
         if (userIDNumber.isNotEmpty()){
 
             _onProgressBar.value = true
 
             disposableObserver = object: DisposableObserver<List<Entity.SeniorCitizen>>() {
                 override fun onComplete() {
-                    Timber.i("onComplete")
+                    _onProgressBar.postValue(false)
                 }
 
                 override fun onNext(t: List<Entity.SeniorCitizen>) {
-                    Timber.i("onNext")
                     seniorCitizenResult.postValue(t)
                     seniorCitizenLoader.postValue(false)
+                    _onProgressBar.postValue(false)
 
                     if (t.isNotEmpty()){
                         homeCallback.onSuccess()
@@ -69,6 +67,7 @@ class HomeActivityViewModel@Inject constructor(private val seniorCitizenReposito
                 override fun onError(e: Throwable) {
                     seniorCitizenError.postValue(e.message)
                     seniorCitizenLoader.postValue(false)
+                    _onProgressBar.postValue(false)
                 }
 
             }

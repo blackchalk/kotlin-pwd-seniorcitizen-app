@@ -188,7 +188,6 @@ class SeniorCitizenRepository @Inject constructor(
     private fun getSenior(u: String, p: String): Observable<List<Entity.SeniorCitizen>> {
 
         // val test = SimpleCrypto.decrypt(BuildConfig.SECRET_KEY,p)
-
         return seniorCitizenDao.getSeniorCitizen(u, p)
             .doOnNext {
                 Timber.e(it.size.toString())
@@ -225,6 +224,7 @@ class SeniorCitizenRepository @Inject constructor(
     }
 
     private fun getSeniorByIDNumber(id: String): Observable<List<Entity.SeniorCitizen>> {
+        Timber.i("getSeniorByIDNumber:$id")
         return seniorCitizenDao.getSeniorCitizenByIdNumber(id)
     }
 

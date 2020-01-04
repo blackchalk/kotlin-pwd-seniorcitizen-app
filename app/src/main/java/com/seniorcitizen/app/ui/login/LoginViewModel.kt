@@ -31,7 +31,7 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
     fun seniorCitizenError(): LiveData<String> = seniorCitizenError
     fun seniorCitizenLoader(): LiveData<Boolean> = seniorCitizenLoader
 
-    private lateinit var disposableObserver: DisposableObserver<List<Entity.SeniorCitizen>>
+    private var disposableObserver: DisposableObserver<List<Entity.SeniorCitizen>>? = null
 
     private val _onProgressBar = MutableLiveData<Boolean>()
     fun onProgressBar() = _onProgressBar as LiveData<Boolean>
@@ -63,7 +63,7 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
 
                     if(t.isNotEmpty()){
                         loginCallback.onSuccess()
-                        getLoggedInUser()
+                        // getLoggedInUser()
                     }else{
                         loginCallback.onFailure("No User Found.")
                     }
@@ -71,7 +71,7 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
 
                 override fun onError(e: Throwable) {
                     Timber.i("onError")
-                    seniorCitizenError.postValue(e.message)
+
                     seniorCitizenLoader.postValue(false)
                     _onProgressBar.postValue(false)
                     loginCallback.onFailure(e.message)
@@ -84,13 +84,8 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .debounce(400, TimeUnit.MILLISECONDS)
-                    .doOnComplete { disposableObserver.dispose() }
-                    .subscribe(disposableObserver) } }
+                    .subscribe(disposableObserver!!) } }
             }
-    }
-
-    fun doLogin2(user : Entity.SeniorCitizen){
-        seniorCitizenRepository.comparePassword(user.username!!,user.password!!)
     }
 
     private fun contentFillValidate(user: Entity.SeniorCitizen): Boolean {
@@ -106,7 +101,10 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
     }
 
     fun disposeElements(){
-        if(!disposableObserver.isDisposed){disposableObserver.dispose()}
+        if(disposableObserver!=null){
+            if(!disposableObserver!!.isDisposed){
+                disposableObserver!!.dispose()}
+        }
     }
 
     fun getLoggedInUser() : String? {

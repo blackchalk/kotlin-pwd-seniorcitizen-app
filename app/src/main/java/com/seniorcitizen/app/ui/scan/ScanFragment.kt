@@ -15,6 +15,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
+import org.jetbrains.anko.toast
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -51,11 +52,11 @@ class ScanFragment: BaseFragment<FragmentScanBinding, ScanViewModel>(), QRCodeRe
 			val handler = Handler()
 			handler.postDelayed({
 				//5 ms delay
-			}, 500)
+			}, 100)
 
 			Timber.d("onQRCodeRead: %s", text)
 
-			if (text != null) {
+			if (text!=null) {
 				val disposable = CompositeDisposable()
 
 				disposable.add(viewmodel.getTransactionById(text.toInt())
@@ -71,7 +72,7 @@ class ScanFragment: BaseFragment<FragmentScanBinding, ScanViewModel>(), QRCodeRe
 										if (detaillist != null) {
 											for(names in detaillist)
 											{
-												create.add(" "+names?.quantity+"\t"+names?.item)
+												create.add(" "+names?.quantity+"\t"+names?.item+"\t\t"+names?.price+" PHP")
 											}
 										}
 
@@ -166,6 +167,6 @@ class ScanFragment: BaseFragment<FragmentScanBinding, ScanViewModel>(), QRCodeRe
 	}
 
 	override fun onFailure(responseMessage: String, responseCode: Int) {
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+		activity?.toast(resources.getString(R.string.error_401) + responseMessage)
 	}
 }

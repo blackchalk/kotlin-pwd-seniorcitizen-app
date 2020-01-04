@@ -51,28 +51,11 @@ class TransactionFragment: BaseFragment<FragmentTransactionsBinding, Transaction
 			}
 		}) }
 
-		getTransactionObservableViewModel()
+		observersTransactionLiveData()
 	}
 
 	// Observe transactions of this user and fill the list
-	private fun getTransactionObservableViewModel() {
-		viewModel.getTransactions().observe(this, Observer {
-			if (it.isNotEmpty()){
-				recyclerView.visibility = View.VISIBLE
-			}
-		})
-
-		viewModel.getError().observe(this, Observer {
-			if (it != null)
-				if (it){
-					tv_error.visibility = View.VISIBLE
-					recyclerView.visibility = View.GONE
-					tv_error.text = "An Error Occurred While Loading Data!"
-				}else{
-					tv_error.visibility = View.GONE
-					tv_error.text = null
-				}
-		})
+	private fun observersTransactionLiveData() {
 
 		viewModel.getLoading().observe(this, Observer {
 			if(it != null){
@@ -84,6 +67,23 @@ class TransactionFragment: BaseFragment<FragmentTransactionsBinding, Transaction
 					loading_view.visibility = View.GONE
 				}
 			}
+		})
+
+		viewModel.getTransactions().observe(this, Observer {
+			if (it.isNotEmpty()){
+				recyclerView.visibility = View.VISIBLE
+			}
+		})
+
+		viewModel.getError().observe(this, Observer {
+			if (it != null){
+					tv_error.visibility = View.VISIBLE
+					recyclerView.visibility = View.GONE
+					tv_error.text = "An Error Occurred While Loading Data!"
+				}else{
+					tv_error.visibility = View.GONE
+					tv_error.text = null
+				}
 		})
 	}
 
@@ -110,7 +110,7 @@ class TransactionFragment: BaseFragment<FragmentTransactionsBinding, Transaction
 		if (detaillist != null) {
 			for(names in detaillist)
 			{
-				create.add(" "+names?.quantity+"\t"+names?.item+"\t"+names?.price)
+				create.add(" "+names?.quantity+"\t"+names?.item+"\t"+names?.price+" PHP")
 			}
 		}
 
@@ -129,5 +129,15 @@ class TransactionFragment: BaseFragment<FragmentTransactionsBinding, Transaction
 				}
 			mD.show()
 		}
+	}
+
+	override fun onStop() {
+		super.onStop()
+		viewModel.clearElements()
+	}
+
+	override fun onDestroyView() {
+		super.onDestroyView()
+		viewModel.disposeElements()
 	}
 }

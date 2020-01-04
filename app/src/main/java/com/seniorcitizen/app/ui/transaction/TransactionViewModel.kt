@@ -19,16 +19,20 @@ import javax.inject.Inject
 class TransactionViewModel @Inject constructor(val seniorCitizenRepository: SeniorCitizenRepository) : ViewModel()  {
 
     private var disposable: CompositeDisposable? = null
+
     private val transactions: MutableLiveData<List<Transaction>> = MutableLiveData()
-    private val transactionsLoadError: MutableLiveData<Boolean> = MutableLiveData()
+
+    private val transactionsLoadError: MutableLiveData<String> = MutableLiveData()
+
     private val loading: MutableLiveData<Boolean> = MutableLiveData()
+
     private var request : UserTransactionRequest? = null
 
     fun getTransactions(): LiveData<List<Transaction>> {
         return transactions
     }
 
-    fun getError(): LiveData<Boolean> {
+    fun getError(): LiveData<String> {
         return transactionsLoadError
     }
 
@@ -44,8 +48,11 @@ class TransactionViewModel @Inject constructor(val seniorCitizenRepository: Seni
     private fun fetchTransactions(user: Entity.SeniorCitizen){
 
         loading.value = true
+
         request = UserTransactionRequest(SeniorCitizenID = user.seniorCitizenID)
+
         disposable = CompositeDisposable()
+
         disposable!!.add(
             seniorCitizenRepository.getAllTransactions(request!!)
                 .subscribeOn(Schedulers.io())
@@ -54,23 +61,23 @@ class TransactionViewModel @Inject constructor(val seniorCitizenRepository: Seni
                                 DisposableSingleObserver<List<Transaction>>() {
 
                                 override fun onSuccess(value: List<Transaction>) {
-                                    transactionsLoadError.value = false
-                                    transactions.value = value
-                                    loading.value = false
+                                    transactions.postValue(value)
+                                    loading.postValue(false)
                                 }
 
                                 override fun onError(e: Throwable) {
-                                    transactionsLoadError.value = true
-                                    loading.value = false
+                                    transactionsLoadError.postValue(e.message)
+                                    loading.postValue(false)
                                 }
                             }))
+        disposable?.clear()
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        if (disposable != null) {
-            disposable!!.clear()
-            disposable = null
-        }
+    fun clearElements(){
+        disposable?.clear()
+    }
+
+    fun disposeElements(){
+        if(!disposable!!.isDisposed){ disposable?.dispose()}
     }
 }

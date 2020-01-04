@@ -3,7 +3,6 @@ package com.seniorcitizen.app.ui.home
 import android.Manifest
 import android.content.res.Resources
 import android.os.Bundle
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
@@ -21,8 +20,6 @@ import com.seniorcitizen.app.ui.base.BaseActivity
 import com.seniorcitizen.app.utils.Constants
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.activity_home.*
-import org.jetbrains.anko.toast
 import timber.log.Timber
 
 /**
@@ -61,40 +58,24 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 			it.viewModel = viewModel
 		}
 
+		// initiate request for user
 		observeHomeLiveData()
 
-	}
-
-	private fun observeHomeLiveData() {
-		// initiate request for user
-		viewModel.doRequetUser()
-
-		//Listeners
 		viewModel.seniorCitizenResult().observe(this, Observer { result ->
 			if (result != null) {
 				Timber.i("$result")
 			}
 		})
+	}
 
-		viewModel.seniorCitizenLoader().observe(this, Observer { loading ->
-			if (!loading) {
-				progress_bar.visibility = View.GONE
-			} else {
-				progress_bar.visibility = View.VISIBLE
-			}
-		})
+	private fun observeHomeLiveData() {
 
-		viewModel.seniorCitizenError().observe(this, Observer { error ->
-			if (error.isNotEmpty()) {
-				toast(resources.getString(R.string.error_401) + error)
-			}
-		})
+		viewModel.doRequestLoggedInUser()
 	}
 
 	// asks user for permissions for camera and read/write storage
 	private fun checkPermission() {
 		val rxPermissions = RxPermissions(this) // where this is an Activity or Fragment instance
-
 		// Must be done during an initialization phase like onCreate
 		disposable = rxPermissions
 			.request(Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -104,7 +85,6 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 				if (granted) { // Always true pre-M
 					init()
 				} else { // Oups permission denied
-					Timber.e("Permission denied")
 					finish()
 				}
 			}
@@ -112,7 +92,6 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 
 	// prepare the bottom navigation and navigation controllers
 	private fun init() {
-
 		val host: NavHostFragment = supportFragmentManager
 			.findFragmentById(R.id.nav_host_fragment) as NavHostFragment? ?: return
 
@@ -131,7 +110,6 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 			} catch (e: Resources.NotFoundException) {
 				Integer.toString(destination.id)
 			}
-
 			Timber.i( "Navigated to $dest")
 		}
 	}
@@ -160,6 +138,5 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 	}
 
 	override fun onSuccess() {
-		progress_bar.visibility = View.GONE
 	}
 }
