@@ -51,13 +51,13 @@ class HomeActivityViewModel@Inject constructor(private val seniorCitizenReposito
 
             disposableObserver = object: DisposableObserver<List<Entity.SeniorCitizen>>() {
                 override fun onComplete() {
-                    _onProgressBar.postValue(false)
+                    Timber.i("onComplete")
                 }
 
                 override fun onNext(t: List<Entity.SeniorCitizen>) {
+                    Timber.i("onNext")
                     seniorCitizenResult.postValue(t)
                     seniorCitizenLoader.postValue(false)
-                    _onProgressBar.postValue(false)
 
                     if (t.isNotEmpty()){
                         homeCallback.onSuccess()
@@ -69,7 +69,6 @@ class HomeActivityViewModel@Inject constructor(private val seniorCitizenReposito
                 override fun onError(e: Throwable) {
                     seniorCitizenError.postValue(e.message)
                     seniorCitizenLoader.postValue(false)
-                    _onProgressBar.postValue(false)
                 }
 
             }

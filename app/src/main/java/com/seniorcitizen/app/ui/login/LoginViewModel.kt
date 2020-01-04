@@ -54,6 +54,7 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
                 }
 
                 override fun onNext(t: List<Entity.SeniorCitizen>) {
+
                     seniorCitizenResult.postValue(t)
                     seniorCitizenLoader.postValue(false)
                     _onProgressBar.postValue(false)
@@ -87,6 +88,10 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
                     .doOnComplete { disposableObserver.dispose() }
                     .subscribe(disposableObserver) } }
             }
+    }
+
+    fun doLogin2(user : Entity.SeniorCitizen){
+        seniorCitizenRepository.comparePassword(user.username!!,user.password!!)
     }
 
     private fun contentFillValidate(user: Entity.SeniorCitizen): Boolean {

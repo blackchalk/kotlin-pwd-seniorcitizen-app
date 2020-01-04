@@ -7,7 +7,6 @@ import androidx.room.Query
 import com.seniorcitizen.app.data.model.Entity
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.SingleObserver
 
 /**
  * Created by Nic Evans on 2019-12-10.
@@ -17,6 +16,9 @@ interface SeniorCitizenDao {
 
     @Query("Select * from seniorCitizen where username = :username AND password = :password LIMIT 1")
     fun getSeniorCitizen(username : String, password : String) : Observable<List<Entity.SeniorCitizen>>
+
+    @Query("Select * from seniorCitizen where username = :username LIMIT 1")
+    fun attemptLoginWithUserName(username: String): Observable<List<Entity.SeniorCitizen>>
 
     @Query("Select * from seniorCitizen")
     fun getAllSeniorCitizen(): Single<List<Entity.SeniorCitizen>>

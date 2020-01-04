@@ -110,7 +110,7 @@ class TransactionFragment: BaseFragment<FragmentTransactionsBinding, Transaction
 		if (detaillist != null) {
 			for(names in detaillist)
 			{
-				create.add(" "+names?.quantity+"\t"+names?.item)
+				create.add(" "+names?.quantity+"\t"+names?.item+"\t"+names?.price)
 			}
 		}
 

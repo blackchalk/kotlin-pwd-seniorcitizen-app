@@ -35,8 +35,8 @@ import javax.crypto.SecretKey
  */
 class EnCryptor {
 
-    private lateinit var encryption: ByteArray
-    private lateinit var iv: ByteArray
+    lateinit var encryption: ByteArray
+    lateinit var iv: ByteArray
 
     @Throws(
         UnrecoverableEntryException::class,
@@ -55,10 +55,13 @@ class EnCryptor {
         val cipher: Cipher = Cipher.getInstance(TRANSFORMATION)
         cipher.init(Cipher.ENCRYPT_MODE, getSecretKey(alias))
         iv = cipher.getIV()
-        return cipher.doFinal(textToEncrypt.toByteArray(charset("UTF-8"))).also({
+        return cipher.doFinal(textToEncrypt.toByteArray(charset("UTF-8"))).also {
             encryption = it
-        })
+        }
     }
+
+    fun getIV(): ByteArray { return iv }
+    fun encryption(): ByteArray { return encryption }
 
     @NonNull
     @Throws(

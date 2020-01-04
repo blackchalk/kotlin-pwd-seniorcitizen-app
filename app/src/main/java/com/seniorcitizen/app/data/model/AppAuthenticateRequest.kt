@@ -5,8 +5,8 @@ import com.squareup.moshi.Json
 data class AppAuthenticateRequest(
 
 	@Json(name="password")
-	val password: String? = null,
+	var password: String? = "password",
 
 	@Json(name="username")
-	val username: String? = null
+	var username: String? = "test"
 )

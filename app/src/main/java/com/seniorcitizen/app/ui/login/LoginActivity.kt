@@ -46,7 +46,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginCallback{
         })
 
         viewModel.seniorCitizenLoader().observe(this, Observer<Boolean>{
-            // if(it == false) progress_bar.visibility = View.GONE
+            btn_login.isEnabled = it != true
         })
     }
 

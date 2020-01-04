@@ -42,6 +42,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(){
         mainActivityViewModel.appAuthenticateResult().observe(this, Observer<AppAuthenticateResponse>{
             if (it!=null){
                 progress_bar.visibility = View.GONE
+            }else{
+                progress_bar.visibility = View.VISIBLE
             }
         })
 

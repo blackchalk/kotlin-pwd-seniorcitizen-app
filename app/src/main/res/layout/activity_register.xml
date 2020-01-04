@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="user" type="com.seniorcitizen.app.data.model.Entity.SeniorCitizen" />
+        <variable name="user" type="com.seniorcitizen.app.data.model.RegisterRequest" />
         <variable name="viewModel" type="com.seniorcitizen.app.ui.register.RegisterViewModel" />
     </data>
 
@@ -38,6 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:indeterminate="true"
+            app:onProgressBar="@{viewModel.onProgressBar()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -102,7 +103,7 @@
             android:padding="@dimen/padding_secondary"
             android:paddingTop="@dimen/padding_primary"
             android:paddingBottom="@dimen/padding_primary"
-            android:text=""
+            android:text="@={user.firstName}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tv_register_msg"
@@ -133,6 +134,7 @@
             android:layout_marginTop="@dimen/margin_primary"
             android:background="@drawable/bg_field"
             android:hint="@string/register_middle_name"
+            android:text="@={user.middleName}"
             android:inputType="textPersonName"
             android:padding="@dimen/padding_secondary"
             android:paddingTop="@dimen/padding_primary"
@@ -167,11 +169,11 @@
             android:layout_marginTop="@dimen/margin_primary"
             android:background="@drawable/bg_field"
             android:hint="@string/register_last_name"
-            android:inputType="text"
+            android:text="@={user.lastName}"
+            android:inputType="textPersonName"
             android:padding="@dimen/padding_secondary"
             android:paddingTop="@dimen/padding_primary"
             android:paddingBottom="@dimen/padding_primary"
-            android:text=""
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/tv_error_last_name"
             app:layout_constraintStart_toStartOf="@+id/et_middle_name"
@@ -202,9 +204,11 @@
             android:layout_marginTop="@dimen/margin_primary"
             android:background="@drawable/bg_field"
             android:hint="@string/register_birthday"
-            android:inputType="textPassword"
+            android:text="@={user.birthday}"
+            android:clickable="true"
+            android:focusable="false"
+            android:inputType="none"
             android:padding="@dimen/padding_secondary"
-            android:text=""
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/tv_error_email"
             app:layout_constraintStart_toStartOf="@+id/et_last_name"
@@ -235,15 +239,15 @@
             android:layout_marginTop="@dimen/margin_primary"
             android:background="@drawable/bg_field"
             android:hint="@string/register_address"
-            android:inputType="textPassword"
+            android:text="@={user.address}"
+            android:inputType="textMultiLine|textPostalAddress"
             android:padding="@dimen/padding_secondary"
-            android:text=""
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/tv_error_birthday"
             app:layout_constraintStart_toStartOf="@+id/et_birthday"
             app:layout_constraintTop_toBottomOf="@+id/tv_error_birthday"
             app:layout_constraintVertical_bias="0.0"
-            tools:ignore="Autofill" />
+             />
 
         <TextView
             android:id="@+id/tv_error_address"
@@ -275,14 +279,14 @@
                 android:layout_marginStart="8dp"
                 style="@style/TextPrimaryCaptionStyle"
                 android:text="@string/register_is_senior"
-                android:onClick="onRadioButtonClicked"/>
+                android:onClick="onRadioButtonStatusClicked"/>
             <RadioButton android:id="@+id/radio_pwd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 style="@style/TextPrimaryCaptionStyle"
                 android:text="@string/register_is_pwd"
-                android:onClick="onRadioButtonClicked"/>
+                android:onClick="onRadioButtonStatusClicked"/>
         </RadioGroup>
 
         <RadioGroup
@@ -301,14 +305,14 @@
                 android:layout_marginStart="8dp"
                 style="@style/TextPrimaryCaptionStyle"
                 android:text="@string/register_sex_male"
-                android:onClick="onRadioButtonClicked"/>
+                android:onClick="onRadioButtonSexClicked"/>
             <RadioButton android:id="@+id/radio_female"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 style="@style/TextPrimaryCaptionStyle"
                 android:text="@string/register_sex_female"
-                android:onClick="onRadioButtonClicked"/>
+                android:onClick="onRadioButtonSexClicked"/>
         </RadioGroup>
 
         <EditText
@@ -319,9 +323,9 @@
             android:layout_marginTop="@dimen/margin_primary"
             android:background="@drawable/bg_field"
             android:hint="@string/register_user_name"
-            android:inputType="textPassword"
+            android:inputType="text"
             android:padding="@dimen/padding_secondary"
-            android:text=""
+            android:text="@={user.username}"
             app:layout_constraintEnd_toEndOf="@+id/rg_sex"
             app:layout_constraintStart_toStartOf="@+id/rg_sex"
             app:layout_constraintTop_toBottomOf="@+id/rg_sex"
@@ -353,7 +357,7 @@
             android:hint="@string/register_password"
             android:inputType="textPassword"
             android:padding="@dimen/padding_secondary"
-            android:text=""
+            android:text="@={user.password}"
             app:layout_constraintEnd_toEndOf="@+id/et_user_name"
             app:layout_constraintStart_toStartOf="@+id/et_user_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_error_user_name"
@@ -416,6 +420,7 @@
             android:layout_marginBottom="@dimen/margin_secondary"
             android:background="@drawable/bg_button_rectangle"
             android:text="@string/register"
+            android:onClick="@{() -> viewModel.doRegister(user)}"
             android:visibility="visible"
             android:textColor="@color/colorSecondaryText"
             app:layout_constraintBottom_toTopOf="@+id/ll_to_login"

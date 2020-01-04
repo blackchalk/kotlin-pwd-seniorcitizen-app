@@ -3,8 +3,10 @@ package com.seniorcitizen.app.ui.home
 import android.Manifest
 import android.content.res.Resources
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -19,6 +21,8 @@ import com.seniorcitizen.app.ui.base.BaseActivity
 import com.seniorcitizen.app.utils.Constants
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.activity_home.*
+import org.jetbrains.anko.toast
 import timber.log.Timber
 
 /**
@@ -58,6 +62,27 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 		}
 
 		viewModel.doRequetUser()
+
+		//listening for livedata
+		viewModel.seniorCitizenResult().observe(this, Observer{ result ->
+			if (result!=null){
+				Timber.i("$result")
+			}
+		})
+
+		viewModel.seniorCitizenLoader().observe(this,Observer{ loading ->
+			if (!loading){
+				progress_bar.visibility = View.GONE
+			}else{
+				progress_bar.visibility = View.VISIBLE
+			}
+		})
+
+		viewModel.seniorCitizenError().observe(this,Observer{ error ->
+			if (error.isNotEmpty()){
+				toast(resources.getString(R.string.error_401) + error)
+			}
+		})
 
 	}
 
@@ -130,6 +155,6 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 	}
 
 	override fun onSuccess() {
-
+		progress_bar.visibility = View.GONE
 	}
 }
