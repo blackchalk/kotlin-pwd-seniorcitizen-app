@@ -221,12 +221,13 @@ class SeniorCitizenRepository @Inject constructor(
         return seniorCitizenDao.attemptLoginWithUserName(u)
     }
 
-    private fun getSeniorByID(id: String): Observable<List<Entity.SeniorCitizen>> {
+    fun getSeniorById(id: String): Observable<List<Entity.SeniorCitizen>> {
         return seniorCitizenDao.getSeniorCitizenByIdNumber(id)
             .doOnNext {
                 Timber.e(it.size.toString())
             }
     }
+
     private fun regUser(request: RegisterRequest): Observable<RegisterResponse>{
         Timber.i("adding token:")
         Timber.i("Bearer "+Constants.APP_TOKEN)
