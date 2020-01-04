@@ -70,14 +70,21 @@ class TransactionViewModel @Inject constructor(val seniorCitizenRepository: Seni
                                     loading.postValue(false)
                                 }
                             }))
-        disposable?.clear()
     }
 
-    fun clearElements(){
-        disposable?.clear()
+    override fun onCleared() {
+        super.onCleared()
+        if (disposable != null) {
+            disposable!!.clear()
+            disposable = null
+        }
     }
 
-    fun disposeElements(){
-        if(!disposable!!.isDisposed){ disposable?.dispose()}
-    }
+    // fun clearElements(){
+    //     disposable?.clear()
+    // }
+    //
+    // fun disposeElements(){
+    //     if(!disposable!!.isDisposed){ disposable?.dispose()}
+    // }
 }

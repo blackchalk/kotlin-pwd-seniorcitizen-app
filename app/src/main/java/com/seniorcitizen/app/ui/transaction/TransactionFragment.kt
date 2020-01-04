@@ -54,6 +54,12 @@ class TransactionFragment: BaseFragment<FragmentTransactionsBinding, Transaction
 		observersTransactionLiveData()
 	}
 
+	override fun onResume() {
+		super.onResume()
+
+		recyclerView.adapter?.notifyDataSetChanged()
+	}
+
 	// Observe transactions of this user and fill the list
 	private fun observersTransactionLiveData() {
 
@@ -110,7 +116,7 @@ class TransactionFragment: BaseFragment<FragmentTransactionsBinding, Transaction
 		if (detaillist != null) {
 			for(names in detaillist)
 			{
-				create.add(" "+names?.quantity+"\t"+names?.item+"\t"+names?.price+" PHP")
+				create.add(" "+names?.quantity+"\t"+names?.item+"\t\t- PHP "+names?.price+"")
 			}
 		}
 
@@ -119,7 +125,11 @@ class TransactionFragment: BaseFragment<FragmentTransactionsBinding, Transaction
 				.title(R.string.ViewDialogTitle)
 				.show {
 					listItems( items = create)
-					message( text = "ORNumber: "+transaction?.orNumber+"\nTotal Items:"+transaction?.totalQuantity)
+					message( text = "ORNumber: "+transaction?.orNumber+"\n" +
+						"Name: "+transaction?.business?.businessName+"\n" +
+						"Type: "+transaction?.business?.type+"\n" +
+						"Total Items: "+transaction?.totalQuantity
+					)
 					positiveButton(text = "OK") { dialog ->
 						dialog.dismiss()
 					}
@@ -129,15 +139,5 @@ class TransactionFragment: BaseFragment<FragmentTransactionsBinding, Transaction
 				}
 			mD.show()
 		}
-	}
-
-	override fun onStop() {
-		super.onStop()
-		viewModel.clearElements()
-	}
-
-	override fun onDestroyView() {
-		super.onDestroyView()
-		viewModel.disposeElements()
 	}
 }

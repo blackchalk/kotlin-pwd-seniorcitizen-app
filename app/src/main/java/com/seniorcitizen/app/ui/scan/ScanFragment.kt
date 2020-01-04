@@ -72,7 +72,7 @@ class ScanFragment: BaseFragment<FragmentScanBinding, ScanViewModel>(), QRCodeRe
 										if (detaillist != null) {
 											for(names in detaillist)
 											{
-												create.add(" "+names?.quantity+"\t"+names?.item+"\t\t"+names?.price+" PHP")
+												create.add(" "+names?.quantity+"\t"+names?.item+"\t\t- PHP \"+names?.price+")
 											}
 										}
 
@@ -81,7 +81,11 @@ class ScanFragment: BaseFragment<FragmentScanBinding, ScanViewModel>(), QRCodeRe
 												.title(R.string.ScanDialogTitle)
 												.show {
 													listItems( items = create)
-													message( text = "ORNumber: "+value[0].orNumber+"\nTotal Items:"+value[0].totalQuantity)
+													message( text = "ORNumber: "+value[0].orNumber+"\n" +
+														"Name: "+value[0].business?.businessName+"\n" +
+														"Type: "+value[0].business?.type+"\n" +
+														"Total Items: "+value[0].totalQuantity
+													)
 													positiveButton(text = "OK") { dialog ->
 														dialog.dismiss()
 														qrdecoderview.setQRDecodingEnabled(true)
