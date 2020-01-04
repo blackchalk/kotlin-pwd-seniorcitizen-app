@@ -61,29 +61,34 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 			it.viewModel = viewModel
 		}
 
+		observeHomeLiveData()
+
+	}
+
+	private fun observeHomeLiveData() {
+		// initiate request for user
 		viewModel.doRequetUser()
 
-		//listening for livedata
-		viewModel.seniorCitizenResult().observe(this, Observer{ result ->
-			if (result!=null){
+		//Listeners
+		viewModel.seniorCitizenResult().observe(this, Observer { result ->
+			if (result != null) {
 				Timber.i("$result")
 			}
 		})
 
-		viewModel.seniorCitizenLoader().observe(this,Observer{ loading ->
-			if (!loading){
+		viewModel.seniorCitizenLoader().observe(this, Observer { loading ->
+			if (!loading) {
 				progress_bar.visibility = View.GONE
-			}else{
+			} else {
 				progress_bar.visibility = View.VISIBLE
 			}
 		})
 
-		viewModel.seniorCitizenError().observe(this,Observer{ error ->
-			if (error.isNotEmpty()){
+		viewModel.seniorCitizenError().observe(this, Observer { error ->
+			if (error.isNotEmpty()) {
 				toast(resources.getString(R.string.error_401) + error)
 			}
 		})
-
 	}
 
 	// asks user for permissions for camera and read/write storage

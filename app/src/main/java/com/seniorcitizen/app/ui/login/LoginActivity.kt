@@ -1,6 +1,7 @@
 package com.seniorcitizen.app.ui.login
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.seniorcitizen.app.R
@@ -46,7 +47,14 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginCallback{
         })
 
         viewModel.seniorCitizenLoader().observe(this, Observer<Boolean>{
+
             btn_login.isEnabled = it != true
+
+            if (it){
+                progress_bar.visibility = View.VISIBLE
+            }else{
+                progress_bar.visibility = View.GONE
+            }
         })
     }
 
