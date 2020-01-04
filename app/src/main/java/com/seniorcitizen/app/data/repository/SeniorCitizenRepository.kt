@@ -42,16 +42,12 @@ class SeniorCitizenRepository @Inject constructor(
     , private val apiInterface: ApiInterface
     , private val utils: Utils
 ) {
-
     var request: AppAuthenticateRequest = AppAuthenticateRequest()
+
 
     fun getSeniorLogin(user: String, pw: String): Observable<List<Entity.SeniorCitizen>> {
 
         return getSenior(user, pw)
-    }
-
-    fun getSeniorById(id: String): Observable<List<Entity.SeniorCitizen>>{
-        return getSeniorByIDNumber(id)
     }
 
     fun getAllSenior(appToken: String): Observable<List<Entity.SeniorCitizen>> {
@@ -88,6 +84,14 @@ class SeniorCitizenRepository @Inject constructor(
         return single
     }
 
+    private fun getTransactionBySeniorCitizenID(token: String,id: UserTransactionRequest): Single<List<Transaction>>{
+        return apiInterface.getUserTransactions("Bearer "+token,id.SeniorCitizenID!!)
+    }
+
+    private fun getTransactionByTransactionid(token: String,id: Int): Single<List<Transaction>>{
+        return apiInterface.getTransactionByTransationId("Bearer "+token,id)
+    }
+
     fun authenticateApp(username: String, password: String): Observable<AppAuthenticateResponse> {
         Timber.i("$username $password")
 
@@ -112,14 +116,7 @@ class SeniorCitizenRepository @Inject constructor(
                 } }
         }
         return observableAppAuth!!
-    }
 
-    private fun getTransactionBySeniorCitizenID(token: String, user: UserTransactionRequest) : Single<List<Transaction>>{
-        return apiInterface.getUserTransactions("Bearer "+ token, user.SeniorCitizenID!!)
-    }
-
-    private fun getTransactionByTransactionid(token: String,transactionId: Int): Single<List<Transaction>>{
-        return apiInterface.getTransactionByTransationId("Bearer "+token,transactionId)
     }
 
     private fun getSeniorCitizensFromApi(token : String): Observable<List<Entity.SeniorCitizen>> {
@@ -138,6 +135,7 @@ class SeniorCitizenRepository @Inject constructor(
 
                     // item.password = test
                     // proceed insert to db
+                    Timber.i("insertSeniorCitizen:%s",item.firstName)
                     seniorCitizenDao.insertSeniorCitizen(item)
                 }
             }
@@ -223,14 +221,16 @@ class SeniorCitizenRepository @Inject constructor(
         return seniorCitizenDao.attemptLoginWithUserName(u)
     }
 
-    private fun getSeniorByIDNumber(id: String): Observable<List<Entity.SeniorCitizen>> {
-        Timber.i("getSeniorByIDNumber:$id")
+    private fun getSeniorByID(id: String): Observable<List<Entity.SeniorCitizen>> {
         return seniorCitizenDao.getSeniorCitizenByIdNumber(id)
+            .doOnNext {
+                Timber.e(it.size.toString())
+            }
     }
-
     private fun regUser(request: RegisterRequest): Observable<RegisterResponse>{
         Timber.i("adding token:")
         Timber.i("Bearer "+Constants.APP_TOKEN)
         return apiInterface.registerUser("Bearer "+Constants.APP_TOKEN,request)
     }
+
 }
