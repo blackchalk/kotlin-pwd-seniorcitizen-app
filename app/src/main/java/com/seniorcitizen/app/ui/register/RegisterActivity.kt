@@ -35,21 +35,7 @@ class RegisterActivity: BaseActivity<ActivityRegisterBinding>(), RegisterCallbac
             it.user = RegisterRequest()
         }
 
-        viewModel.getResponse().observe(this, Observer { response ->
-            if (response!=null){
-                Timber.i("success \n$response")
-            }
-        })
-
-        viewModel.onProgressBar().observe(this, Observer { loading ->
-            if (loading) {
-                btn_register.isEnabled = false
-                progress_bar.visibility = View.VISIBLE
-            }else{
-                btn_register.isEnabled = true
-                progress_bar.visibility = View.GONE
-            }
-        })
+        observersRegister()
 
         iv_back.setOnClickListener {
             // pop to last stack
@@ -59,6 +45,30 @@ class RegisterActivity: BaseActivity<ActivityRegisterBinding>(), RegisterCallbac
         tv_to_login.setOnClickListener { toLoginPage() }
 
         handleBirthdayDatePick()
+    }
+
+    private fun observersRegister() {
+        viewModel.getRegisterLiveData().observe(this, Observer { response ->
+            if (response != null) {
+                Timber.i("$response")
+            }
+        })
+
+        viewModel.onProgressBar().observe(this, Observer { loading ->
+            if (loading) {
+                btn_register.isEnabled = false
+                progress_bar.visibility = View.VISIBLE
+            } else {
+                btn_register.isEnabled = true
+                progress_bar.visibility = View.GONE
+            }
+        })
+
+        viewModel.getRegisterLiveError().observe(this, Observer { error ->
+            if (error != null) {
+                Timber.e(error)
+            }
+        })
     }
 
     private fun handleBirthdayDatePick() {

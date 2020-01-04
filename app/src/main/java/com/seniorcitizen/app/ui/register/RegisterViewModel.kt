@@ -12,6 +12,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -31,10 +32,11 @@ class RegisterViewModel @Inject constructor(private val seniorCitizenRepository:
     private val _onProgressBar = MutableLiveData<Boolean>()
     fun onProgressBar() = _onProgressBar as LiveData<Boolean>
 
-    private val registerResponse: MutableLiveData<RegisterResponse> = MutableLiveData()
-    fun getResponse(): LiveData<RegisterResponse> {
-        return registerResponse
-    }
+    private val registerLiveData: MutableLiveData<RegisterResponse> = MutableLiveData()
+    fun getRegisterLiveData(): LiveData<RegisterResponse> = registerLiveData
+
+    private val registerLiveError: MutableLiveData<String> = MutableLiveData()
+    fun getRegisterLiveError() = registerLiveError as LiveData<String>
 
     fun doRegister(user: RegisterRequest){
 
@@ -44,14 +46,14 @@ class RegisterViewModel @Inject constructor(private val seniorCitizenRepository:
 
         val disposableObserver = object: DisposableObserver<RegisterResponse>(){
             override fun onComplete() {
-                _onProgressBar.value = false
-
+                Timber.i("onComplete")
+                _onProgressBar.postValue(false)
                 registerCallback.onSuccess()
             }
 
             override fun onNext(t: RegisterResponse) {
 
-                registerResponse.value = t
+                registerLiveData.postValue(t)
 
                 disposable?.add(seniorCitizenRepository.getAllSenior(Constants.APP_TOKEN)
                     .subscribeOn(Schedulers.io())
@@ -61,7 +63,8 @@ class RegisterViewModel @Inject constructor(private val seniorCitizenRepository:
             }
 
             override fun onError(e: Throwable) {
-                _onProgressBar.value = false
+                _onProgressBar.postValue(false)
+                registerLiveError.postValue(e.message)
                 registerCallback.onFailure(e.message.toString(),400)
             }
 

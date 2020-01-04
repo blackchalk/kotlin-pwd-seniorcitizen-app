@@ -9,6 +9,7 @@ import com.seniorcitizen.app.utils.Validator
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -51,10 +52,11 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
 
             disposableObserver = object : DisposableObserver<List<Entity.SeniorCitizen>>(){
                 override fun onComplete() {
+                    Timber.i("onComplete")
                 }
 
                 override fun onNext(t: List<Entity.SeniorCitizen>) {
-
+                    Timber.i("onNext")
                     seniorCitizenResult.postValue(t)
                     seniorCitizenLoader.postValue(false)
                     _onProgressBar.postValue(false)
@@ -68,7 +70,7 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
                 }
 
                 override fun onError(e: Throwable) {
-
+                    Timber.i("onError")
                     seniorCitizenError.postValue(e.message)
                     seniorCitizenLoader.postValue(false)
                     _onProgressBar.postValue(false)
