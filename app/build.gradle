@@ -57,9 +57,11 @@ android {
             testCoverageEnabled true
             debuggable true
             buildConfigField 'String', 'URL', '***REMOVED***'
+            buildConfigField 'String', 'SECRET_KEY', '***REMOVED***'
         }
         release {
             buildConfigField 'String', 'URL', '***REMOVED***'
+            buildConfigField 'String', 'SECRET_KEY', '***REMOVED***'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

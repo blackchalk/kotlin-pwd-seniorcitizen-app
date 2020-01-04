@@ -82,7 +82,6 @@ class SeniorCitizenRepository @Inject constructor(
                     // set member variable
                     appAuthResponse = it
                     Constants.APP_TOKEN = it.token
-                    Timber.i("%s", appAuthResponse)
                     // get api call
                     getAllSenior(it1)
                         .subscribeOn(Schedulers.newThread())
@@ -106,6 +105,8 @@ class SeniorCitizenRepository @Inject constructor(
 
         return apiInterface.getAllSenior("Bearer " + token)
             .doOnNext {
+                // delete all data from database
+                seniorCitizenDao.purgeUsers()
                 for (item in it) {
                     seniorCitizenDao.insertSeniorCitizen(item)
                 }
