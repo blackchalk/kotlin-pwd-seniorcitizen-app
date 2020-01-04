@@ -9,7 +9,6 @@ import android.net.NetworkInfo
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
 import com.seniorcitizen.app.R
 import javax.inject.Inject
 
@@ -18,16 +17,19 @@ import javax.inject.Inject
  */
 class Utils @Inject constructor(private val context: Context) {
 
+    private val deCryptor: DeCryptor = DeCryptor()
+    private val enCryptor: EnCryptor = EnCryptor()
+
+    fun deCryptInstance(): DeCryptor{ return deCryptor }
+    fun enCryptInstance(): EnCryptor{ return enCryptor }
+
     fun checkPermission(
         context: Context,
         activity: Activity,
         permission: String,
         request_code: Int
     ): Boolean {
-        return if (ContextCompat.checkSelfPermission(
-                context,
-                permission
-            ) !== PackageManager.PERMISSION_GRANTED
+        return if (ContextCompat.checkSelfPermission(context, permission) !== PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
                 activity,
@@ -44,11 +46,10 @@ class Utils @Inject constructor(private val context: Context) {
         val connectivity = context.getSystemService(
             Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val info = connectivity.allNetworkInfo
-        if (info != null)
-            for (i in info.indices)
-                if (info[i].state == NetworkInfo.State.CONNECTED) {
-                    return true
-                }
+        for (i in info.indices)
+            if (info[i].state == NetworkInfo.State.CONNECTED) {
+                return true
+            }
         return false
     }
 

@@ -7,7 +7,6 @@ import androidx.room.Query
 import com.seniorcitizen.app.data.model.Entity
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.SingleObserver
 
 /**
  * Created by Nic Evans on 2019-12-10.
@@ -29,5 +28,8 @@ interface SeniorCitizenDao {
 
     @Query("SELECT * from seniorCitizen where idNumber like :idNumber limit 1")
     fun getSeniorCitizenByIdNumber(idNumber: String): Observable<List<Entity.SeniorCitizen>>
+
+    @Query("DELETE FROM seniorCitizen")
+    fun purgeUsers()
 
 }
