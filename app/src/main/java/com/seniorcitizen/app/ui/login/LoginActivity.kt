@@ -48,11 +48,11 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginCallback{
 
         viewModel.seniorCitizenLoader().observe(this, Observer<Boolean>{
 
-            btn_login.isEnabled = it != true
-
             if (it){
+                btn_login.isEnabled = false
                 progress_bar.visibility = View.VISIBLE
             }else{
+                btn_login.isEnabled = true
                 progress_bar.visibility = View.GONE
             }
         })
@@ -81,5 +81,6 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginCallback{
 
     override fun onDestroy() {
         super.onDestroy()
+        viewModel.disposeElements()
     }
 }

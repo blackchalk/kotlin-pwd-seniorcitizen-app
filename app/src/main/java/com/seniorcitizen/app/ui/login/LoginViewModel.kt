@@ -65,7 +65,6 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
                     }else{
                         loginCallback.onFailure("No User Found.")
                     }
-
                 }
 
                 override fun onError(e: Throwable) {
@@ -74,9 +73,7 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
                     seniorCitizenLoader.postValue(false)
                     _onProgressBar.postValue(false)
                     loginCallback.onFailure(e.message)
-
                 }
-
             }
 
             user.username?.let { user.password?.let { it1 ->
@@ -107,7 +104,7 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
     }
 
     fun disposeElements(){
-
+        if(!disposableObserver.isDisposed){disposableObserver.dispose()}
     }
 
     fun getLoggedInUser() : String? {

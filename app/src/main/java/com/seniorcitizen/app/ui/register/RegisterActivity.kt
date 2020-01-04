@@ -42,8 +42,12 @@ class RegisterActivity: BaseActivity<ActivityRegisterBinding>(), RegisterCallbac
         })
 
         viewModel.onProgressBar().observe(this, Observer { loading ->
-            if (loading==false) {
-                Timber.i("$loading")
+            if (loading) {
+                btn_register.isEnabled = false
+                progress_bar.visibility = View.VISIBLE
+            }else{
+                btn_register.isEnabled = true
+                progress_bar.visibility = View.GONE
             }
         })
 
