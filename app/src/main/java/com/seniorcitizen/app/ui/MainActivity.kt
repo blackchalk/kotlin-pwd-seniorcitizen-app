@@ -1,5 +1,6 @@
 package com.seniorcitizen.app.ui
 
+import android.Manifest
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
@@ -9,6 +10,8 @@ import com.seniorcitizen.app.databinding.ActivityMainBinding
 import com.seniorcitizen.app.ui.base.BaseActivity
 import com.seniorcitizen.app.ui.login.LoginActivity
 import com.seniorcitizen.app.ui.register.RegisterActivity
+import com.tbruyelle.rxpermissions2.RxPermissions
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
@@ -19,7 +22,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(){
 
     @Inject
     lateinit var mainActivityViewModel : MainActivityViewModel
-
+    private lateinit var disposable : Disposable
     override fun getContentView(): Int = R.layout.activity_main
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -30,6 +33,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        checkPermission()
 
         try{
             progress_bar.visibility = View.VISIBLE
@@ -66,5 +71,23 @@ class MainActivity : BaseActivity<ActivityMainBinding>(){
     override fun onDestroy() {
         super.onDestroy()
         mainActivityViewModel.disposeElements()
+    }
+
+    // asks user for permissions for camera and read/write storage
+    private fun checkPermission() {
+        val rxPermissions = RxPermissions(this) // where this is an Activity or Fragment instance
+        // Must be done during an initialization phase like onCreate
+        disposable = rxPermissions
+            .request(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                , Manifest.permission.READ_EXTERNAL_STORAGE
+                , Manifest.permission.CAMERA)
+            .subscribe { granted: Boolean ->
+                if (granted) { // Always true pre-M
+
+                } else { // Oups permission denied
+                    finish()
+                }
+            }
     }
 }
