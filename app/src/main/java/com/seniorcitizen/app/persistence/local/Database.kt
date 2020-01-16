@@ -8,7 +8,7 @@ import com.seniorcitizen.app.persistence.dao.SeniorCitizenDao
 /**
  * Created by Nic Evans on 2019-12-10.
  */
-@Database(entities = [Entity.SeniorCitizen::class],version = 1)
+@Database(entities = [Entity.SeniorCitizen::class],version = 2)
 abstract class Database : RoomDatabase() {
     abstract fun seniorCitizenDao() : SeniorCitizenDao
 }

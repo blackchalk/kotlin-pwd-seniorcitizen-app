@@ -12,7 +12,7 @@ import java.io.Serializable
 sealed class Entity: BaseObservable(){
 
 @Entity(
-	tableName = "seniorCitizen",indices = [Index(value = ["seniorCitizenID"], unique = true)]
+	tableName = "seniorCitizen",indices = [Index(value = ["idNumber"], unique = true)]
 )
 data class SeniorCitizen(
 
@@ -40,8 +40,7 @@ data class SeniorCitizen(
 	var sex: String? = null,
 
 	@Json(name="seniorImage")
-	@ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-	var seniorImage: ByteArray? = null,
+	var seniorImage: String? = null,
 
 	@Json(name="idNumber")
 	@ColumnInfo
@@ -111,10 +110,6 @@ data class SeniorCitizen(
 		if (username != other.username) return false
 
 		return true
-	}
-
-	override fun hashCode(): Int {
-		return seniorImage?.contentHashCode() ?: 0
 	}
 }
 }
