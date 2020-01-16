@@ -5,6 +5,7 @@ import com.seniorcitizen.app.data.model.AppAuthenticateResponse
 import com.seniorcitizen.app.data.model.Entity
 import com.seniorcitizen.app.data.model.RegisterRequest
 import com.seniorcitizen.app.data.model.RegisterResponse
+import com.seniorcitizen.app.data.model.RegisterWithImageRequest
 import com.seniorcitizen.app.data.model.Transaction
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -50,6 +51,12 @@ interface ApiInterface {
     fun registerUser(
         @Header("Authorization") authToken: String,
         @Body request: RegisterRequest
+    ): Observable<RegisterResponse>
+
+    @POST("api/senior/create")
+    fun registerWithImageUser(
+        @Header("Authorization") authToken: String,
+        @Body request: RegisterWithImageRequest
     ): Observable<RegisterResponse>
 
 }
