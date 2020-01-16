@@ -1,28 +1,61 @@
 package com.seniorcitizen.app.ui.register
 
 import android.app.DatePickerDialog
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.Matrix
+import android.media.MediaScannerConnection
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Base64
 import android.view.View
 import android.widget.RadioButton
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
+import com.bumptech.glide.Glide
 import com.seniorcitizen.app.R
 import com.seniorcitizen.app.data.model.RegisterRequest
 import com.seniorcitizen.app.databinding.ActivityRegisterBinding
 import com.seniorcitizen.app.ui.base.BaseActivity
 import com.seniorcitizen.app.ui.login.LoginActivity
+import com.seniorcitizen.app.utils.FileUtil
+import id.zelory.compressor.Compressor
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_register.*
+import org.jetbrains.anko.longToast
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.toast
 import timber.log.Timber
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import java.util.Random
 
 class RegisterActivity: BaseActivity<ActivityRegisterBinding>(), RegisterCallback {
+
+    private var disposable : Disposable? = null
 
     private val viewModel: RegisterViewModel by viewModels {
         viewModelFactory
     }
+
+    private var actualImage: File? = null
+    private var compressedImage: File? = null
+
+    private var captureImgFile: File? = null
+
+    private var selectedImageString : String? = null
 
     override fun getContentView(): Int = R.layout.activity_register
 
@@ -42,9 +75,356 @@ class RegisterActivity: BaseActivity<ActivityRegisterBinding>(), RegisterCallbac
             finish()
         }
 
+        btn_register.setOnClickListener {
+
+
+            if (selectedImageString!=null){
+                viewModel.doRegister(getBinding()?.user,selectedImageString)
+            }else{
+                toast("Please Select a profile image")
+            }
+
+        }
+
         tv_to_login.setOnClickListener { toLoginPage() }
 
         handleBirthdayDatePick()
+
+        profile_img!!.setOnClickListener{ showPictureDialog() }
+    }
+
+    private val GALLERY = 1
+    private val REQUEST_IMAGE_CAPTURE = 2
+    lateinit var currentPhotoPath: String
+
+    private fun showPictureDialog() {
+        val pictureDialog = AlertDialog.Builder(this)
+        pictureDialog.setTitle("Select Action")
+        val pictureDialogItems = arrayOf("Select image from gallery", "Capture photo from camera")
+        pictureDialog.setItems(pictureDialogItems
+        ) { dialog, which ->
+            when (which) {
+                0 -> chooseImageFromGallery()
+                1 -> takePhotoFromCamera()
+            }
+        }
+        pictureDialog.show()
+    }
+
+    fun chooseImageFromGallery() {
+        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(galleryIntent, GALLERY)
+    }
+
+    private fun takePhotoFromCamera() {
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            // Ensure that there's a camera activity to handle the intent
+
+            try{
+
+                val photoDirectory = File (
+                    this.getExternalFilesDir(null).toString() + IMAGE_DIRECTORY)
+
+                if (!photoDirectory.exists())
+                {
+                    photoDirectory.mkdirs()
+                }
+
+                val fle = File(photoDirectory,"tempImage.jpg")
+                fle.createNewFile()
+                val tempUri = FileProvider.getUriForFile(
+                    this,
+                    "com.seniorcitizen.app.fileprovider",
+                    fle
+                )
+
+                captureImgFile = fle
+
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri)
+
+            }catch(ex : IOException){
+                ex.printStackTrace()
+            }
+
+            takePictureIntent.resolveActivity(packageManager)?.also {
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+            super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == GALLERY)
+        {
+            if (data == null) {
+                showError("Failed to open picture!")
+                return
+            }
+
+            try{
+                actualImage = FileUtil.from(this, data.data!!) //saves in cache
+                Timber.i("path: %s",actualImage!!.absolutePath)
+                Timber.i("size: %s",actualImage!!.length() / 1024)
+                Timber.i("size: %s",getReadableFileSize(actualImage!!.length()))
+                //check the file size not greater than 500kb else do a compression
+                val actualImgSize = actualImage!!.length() / 1024 // in KB
+                if (actualImgSize > 500){
+                    //do compression
+                    val com = Compressor(this)
+
+                    disposable = com
+                    .compressToFileAsFlowable(actualImage)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        compressedImage = it
+                        Timber.i("compressedImage size: %s",compressedImage!!.length() / 1024)
+                        Timber.i("compressedImage size: %s",getReadableFileSize(compressedImage!!.length()))
+                        Timber.i("compressedImage path: %s",compressedImage!!.absolutePath)
+
+                        saveImage(BitmapFactory.decodeFile(compressedImage!!.absolutePath))
+                        longToast("Image Saved: $currentPhotoPath")
+                        Glide.with(this).load(currentPhotoPath).into(profile_img)
+
+                    },{
+                        it.printStackTrace()
+                        showError(it.message)
+                    })
+
+                }else{
+                    //save image and set pic
+                    val passedImg = BitmapFactory.decodeFile(actualImage!!.absolutePath)
+                    saveImage(passedImg)
+                    setPic()
+                }
+
+
+            }catch (e: IOException){
+                showError("Failed to read picture data!")
+                e.printStackTrace()
+            }
+        }
+        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK)
+        {
+
+            if (captureImgFile!=null){
+
+                try{
+                    // val capImage = FileUtil.from(this, data?.data!!)
+                    var compressingFile: File?
+
+                    Timber.i("path: %s", captureImgFile!!.absolutePath)
+                    Timber.i("size: %s",captureImgFile!!.length() / 1024)
+                    Timber.i("size: %s",getReadableFileSize(captureImgFile!!.length()))
+                    //check the file size not greater than 500kb else do a compression
+                    val actualImgSize = captureImgFile!!.length() / 1024 // in KB
+                    if (actualImgSize > 500){
+                        //do compression
+                        val com = Compressor(this)
+
+                        disposable = com
+                            .compressToFileAsFlowable(captureImgFile)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({
+                                compressingFile = it
+                                Timber.i("compressedImage size: %s",compressingFile!!.length() / 1024)
+                                Timber.i("compressedImage size: %s",getReadableFileSize(compressingFile!!.length()))
+                                Timber.i("compressedImage path: %s",compressingFile!!.absolutePath)
+
+                                saveImage(BitmapFactory.decodeFile(compressingFile!!.absolutePath))
+
+                                //delete temp file
+                                val s0 = captureImgFile!!.delete()
+                                Timber.i("delete temp file: $s0")
+
+                                longToast("Image Saved: $currentPhotoPath")
+                                Glide.with(this).load(currentPhotoPath).into(profile_img)
+
+                            },{
+                                it.printStackTrace()
+                                showError(it.message)
+                            })
+
+                    }else{
+                        //save image and set pic
+                        val passedImg = BitmapFactory.decodeFile(captureImgFile!!.absolutePath)
+                        saveImage(passedImg)
+
+                        //delete temp file
+                        val s0 = captureImgFile!!.delete()
+                        Timber.i("delete temp file: $s0")
+
+                        setPic()
+                    }
+
+                }catch (e: IOException){
+                    showError("Failed to read picture data!")
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
+    fun doCompressionIfNecessary(f : File?){
+        Timber.i("path: %s",f!!.absolutePath)
+        Timber.i("size: %s", f.length() / 1024)
+        Timber.i("size: %s",getReadableFileSize(f.length()))
+        //check the file size not greater than 500kb else do a compression
+        val actualImgSize = f.length() / 1024 // in KB
+        if (actualImgSize > 500){
+            //do compression
+            val com = Compressor(this)
+
+            disposable = com
+                .compressToFileAsFlowable(actualImage)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    compressedImage = it
+                    Timber.i("compressedImage size: %s",compressedImage!!.length() / 1024)
+                    Timber.i("compressedImage size: %s",getReadableFileSize(compressedImage!!.length()))
+                    Timber.i("compressedImage path: %s",compressedImage!!.absolutePath)
+
+                    saveImage(BitmapFactory.decodeFile(compressedImage!!.absolutePath))
+                    longToast("Image Saved: $currentPhotoPath")
+                    Glide.with(this).load(currentPhotoPath).into(profile_img)
+
+                },{
+                    it.printStackTrace()
+                    showError(it.message)
+                })
+
+
+        }else{
+            //save image and set pic
+            val passedImg = BitmapFactory.decodeFile(actualImage!!.absolutePath)
+            saveImage(passedImg)
+            setPic()
+        }
+    }
+
+
+    fun saveImage(myBitmap: Bitmap) {
+        val bytes = ByteArrayOutputStream()
+        myBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes)
+
+        val b = bytes.toByteArray()
+        val stringb = Base64.encodeToString(b,Base64.DEFAULT)
+        Timber.i("encodeToString: $stringb")
+        selectedImageString = stringb
+
+        val photoDirectory = File (
+            this.getExternalFilesDir(null).toString() + IMAGE_DIRECTORY)
+
+        if (!photoDirectory.exists())
+        {
+            photoDirectory.mkdirs()
+        }
+        try
+        {
+            Timber.i("photoDirectory: %s", photoDirectory.toString())
+
+            val f = File(photoDirectory, ((Calendar.getInstance()
+                .getTimeInMillis()).toString() + ".jpg"))
+            f.createNewFile()
+            val fo = FileOutputStream(f)
+            fo.write(bytes.toByteArray())
+            MediaScannerConnection.scanFile(this, arrayOf(f.getPath()), arrayOf("image/jpg"), null)
+            fo.close()
+
+            Timber.i("getAbsolutePath: %s" + f.getAbsolutePath())
+            Timber.i("getAbsolutePath: %s" + f.length())
+            currentPhotoPath = f.absolutePath
+        }
+        catch (e1: IOException){
+            e1.printStackTrace()
+        }
+    }
+
+    fun getResizedBitmap(bm : Bitmap, newWidth: Int, newHeight : Int) : Bitmap{
+        val width = bm.width
+        val height = bm.height
+        val scaleWidth = newWidth.toFloat() / width
+        val scaleHeight = newHeight.toFloat() / height
+
+        //create matrix
+        val matrix : Matrix = Matrix()
+        //resize bm
+        matrix.postScale(scaleWidth,scaleHeight)
+
+        //recreate bitmap
+        val resizedBitmap = Bitmap.createBitmap(bm,0,0,width,height,matrix,false)
+        bm.recycle()
+        return resizedBitmap
+    }
+
+    private fun setPic() {
+        longToast("Image Saved: $currentPhotoPath")
+        Glide.with(this).load(currentPhotoPath).into(profile_img)
+        profile_img.setBackgroundColor(getRandomColor())
+    }
+
+    // @Throws(IOException::class)
+    // private fun createImageFile(): File {
+    //     // Create an image file name
+    //     val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+    //     val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+    //     return File.createTempFile(
+    //         "JPEG_${timeStamp}_", /* prefix */
+    //         ".jpg", /* suffix */
+    //         storageDir /* directory */
+    //     ).apply {
+    //         // Save a file: path for use with ACTION_VIEW intents
+    //         currentPhotoPath = absolutePath
+    //     }
+    // }
+
+    // a duplicate of above method but with one type of name format intenteded
+    // @Throws(IOException::class)
+    // private fun createImageFileSingleName(): File {
+    //     // Create an image file name
+    //     val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+    //     val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+    //     return File.createTempFile(
+    //         "JPEG_${timeStamp}_", /* prefix */
+    //         ".jpg", /* suffix */
+    //         storageDir /* directory */
+    //     ).apply {
+    //         // Save a file: path for use with ACTION_VIEW intents
+    //         currentPhotoPath = absolutePath
+    //     }
+    // }
+
+    // private fun dispatchTakePictureIntent() {
+    //     Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+    //         // Ensure that there's a camera activity to handle the intent
+    //         takePictureIntent.resolveActivity(packageManager)?.also {
+    //             // Create the File where the photo should go
+    //             val photoFile: File? = try {
+    //                 createImageFile()
+    //             } catch (ex: IOException) {
+    //                 // Error occurred while creating the File
+    //                 ...
+    //                 null
+    //             }
+    //             // Continue only if the File was successfully created
+    //             photoFile?.also {
+    //                 val photoURI: Uri = FileProvider.getUriForFile(
+    //                     this,
+    //                     "com.seniorcitizen.android.fileprovider",
+    //                     it
+    //                 )
+    //                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+    //                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO)
+    //             }
+    //         }
+    //     }
+    // }
+
+    companion object {
+        private const val IMAGE_DIRECTORY = "/pwd-senior-booklet"
     }
 
     private fun observersRegister() {
@@ -142,6 +522,28 @@ class RegisterActivity: BaseActivity<ActivityRegisterBinding>(), RegisterCallbac
         }
     }
 
+    fun getReadableFileSize(size: Long): String {
+        if (size <= 0) {
+            return "0"
+        }
+        val units = arrayOf("B", "KB", "MB", "GB", "TB")
+        val digitGroups = (Math.log10(size.toDouble()) / Math.log10(1024.0)).toInt()
+        return DecimalFormat("#,##0.#").format(
+            size / Math.pow(1024.0, digitGroups.toDouble())) + " " + units[digitGroups]
+    }
+
+    private fun getRandomColor(): Int {
+        val rand = Random()
+        return Color.argb(100, rand.nextInt(256), rand.nextInt(256), rand.nextInt(256))
+    }
+
+    fun showError(errorMessage: String?) {
+        if (errorMessage != null) {
+            toast(errorMessage)
+        }
+    }
+
+
     override fun onSuccess() {
         onToastMessage(getString(R.string.registration_success))
         toLoginPage()
@@ -162,5 +564,8 @@ class RegisterActivity: BaseActivity<ActivityRegisterBinding>(), RegisterCallbac
     override fun onDestroy() {
         super.onDestroy()
         viewModel.disposeElements()
+        if(disposable!=null && !disposable!!.isDisposed){
+            disposable!!.dispose()
+        }
     }
 }
