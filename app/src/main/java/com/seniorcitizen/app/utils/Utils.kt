@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.seniorcitizen.app.R
 import javax.inject.Inject
 
+
 /**
  * Created by Nic Evans on 2019-12-10.
  */
