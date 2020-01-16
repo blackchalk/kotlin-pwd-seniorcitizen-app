@@ -1,6 +1,5 @@
 package com.seniorcitizen.app.ui.home
 
-import android.Manifest
 import android.content.res.Resources
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -18,7 +17,6 @@ import com.seniorcitizen.app.R
 import com.seniorcitizen.app.databinding.ActivityHomeBinding
 import com.seniorcitizen.app.ui.base.BaseActivity
 import com.seniorcitizen.app.utils.Constants
-import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.disposables.Disposable
 import timber.log.Timber
 
@@ -42,7 +40,8 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 		val toolbar = findViewById<Toolbar>(R.id.toolbar)
 		setSupportActionBar(toolbar)
 
-		checkPermission()
+		// checkPermission()
+		init()
 	}
 
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -73,22 +72,25 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 		viewModel.doRequestLoggedInUser()
 	}
 
+	/**
+	 * moved to main activity
+	 */
 	// asks user for permissions for camera and read/write storage
-	private fun checkPermission() {
-		val rxPermissions = RxPermissions(this) // where this is an Activity or Fragment instance
-		// Must be done during an initialization phase like onCreate
-		disposable = rxPermissions
-			.request(Manifest.permission.WRITE_EXTERNAL_STORAGE
-				, Manifest.permission.READ_EXTERNAL_STORAGE
-				,Manifest.permission.CAMERA)
-			.subscribe { granted: Boolean ->
-				if (granted) { // Always true pre-M
-					init()
-				} else { // Oups permission denied
-					finish()
-				}
-			}
-	}
+	// private fun checkPermission() {
+	// 	val rxPermissions = RxPermissions(this) // where this is an Activity or Fragment instance
+	// 	// Must be done during an initialization phase like onCreate
+	// 	disposable = rxPermissions
+	// 		.request(Manifest.permission.WRITE_EXTERNAL_STORAGE
+	// 			, Manifest.permission.READ_EXTERNAL_STORAGE
+	// 			,Manifest.permission.CAMERA)
+	// 		.subscribe { granted: Boolean ->
+	// 			if (granted) { // Always true pre-M
+	// 				init()
+	// 			} else { // Oups permission denied
+	// 				finish()
+	// 			}
+	// 		}
+	// }
 
 	// prepare the bottom navigation and navigation controllers
 	private fun init() {
