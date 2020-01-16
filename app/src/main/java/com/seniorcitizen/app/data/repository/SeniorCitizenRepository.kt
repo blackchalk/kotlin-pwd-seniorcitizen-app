@@ -7,6 +7,7 @@ import com.seniorcitizen.app.data.model.AppAuthenticateResponse
 import com.seniorcitizen.app.data.model.Entity
 import com.seniorcitizen.app.data.model.RegisterRequest
 import com.seniorcitizen.app.data.model.RegisterResponse
+import com.seniorcitizen.app.data.model.RegisterWithImageRequest
 import com.seniorcitizen.app.data.model.Transaction
 import com.seniorcitizen.app.data.model.UserTransactionRequest
 import com.seniorcitizen.app.data.remote.ApiInterface
@@ -44,7 +45,6 @@ class SeniorCitizenRepository @Inject constructor(
 ) {
     var request: AppAuthenticateRequest = AppAuthenticateRequest()
 
-
     fun getSeniorLogin(user: String, pw: String): Observable<List<Entity.SeniorCitizen>> {
 
         return getSenior(user, pw)
@@ -71,6 +71,35 @@ class SeniorCitizenRepository @Inject constructor(
         val observer : Observable<RegisterResponse> = regUser(request)
         return observer
     }
+
+    fun registerUserWithImage(request: RegisterRequest, image : String?):Observable<RegisterResponse>{
+
+        val observer: Observable<RegisterResponse>?
+        if (image!=null){
+            val reg = RegisterWithImageRequest(
+                Address = request.Address,
+                Username = request.Username,
+                Password = request.Password,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                MiddleName = request.MiddleName,
+                Sex = request.Sex,
+                Birthday = request.Birthday,
+                IsPWD = request.IsPWD,
+                IDNumber = request.IDNumber,
+                IsSenior = request.IsSenior,
+                SeniorImage = image
+            )
+            Timber.i("$reg")
+            observer = regUserWithImage(reg)
+
+        }else{
+            observer = regUser(request)
+        }
+
+        return observer
+    }
+
 
     fun getAllTransactions(user: UserTransactionRequest): Single<List<Transaction>> {
 
@@ -125,16 +154,6 @@ class SeniorCitizenRepository @Inject constructor(
             .doOnNext {
 
                 for (item in it) {
-
-                    // encrypt sensitive data
-                    // val rawMsg = item.password!!
-
-                    // val converted = conceal(rawMsg)
-
-                    // val test = SimpleCrypto.encrypt(BuildConfig.SECRET_KEY,rawMsg)
-
-                    // item.password = test
-                    // proceed insert to db
                     Timber.i("insertSeniorCitizen:%s",item.firstName)
                     seniorCitizenDao.insertSeniorCitizen(item)
                 }
@@ -229,9 +248,10 @@ class SeniorCitizenRepository @Inject constructor(
     }
 
     private fun regUser(request: RegisterRequest): Observable<RegisterResponse>{
-        Timber.i("adding token:")
-        Timber.i("Bearer "+Constants.APP_TOKEN)
         return apiInterface.registerUser("Bearer "+Constants.APP_TOKEN,request)
     }
 
+    private fun regUserWithImage(request: RegisterWithImageRequest): Observable<RegisterResponse>{
+        return apiInterface.registerWithImageUser("Bearer "+Constants.APP_TOKEN,request)
+    }
 }
