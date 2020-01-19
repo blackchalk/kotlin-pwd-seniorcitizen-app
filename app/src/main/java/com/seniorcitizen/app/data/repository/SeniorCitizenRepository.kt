@@ -1,10 +1,9 @@
 package com.seniorcitizen.app.data.repository
 
-import android.util.Base64
-import com.seniorcitizen.app.BuildConfig
 import com.seniorcitizen.app.data.model.AppAuthenticateRequest
 import com.seniorcitizen.app.data.model.AppAuthenticateResponse
 import com.seniorcitizen.app.data.model.Entity
+import com.seniorcitizen.app.data.model.LoginRequest
 import com.seniorcitizen.app.data.model.RegisterRequest
 import com.seniorcitizen.app.data.model.RegisterResponse
 import com.seniorcitizen.app.data.model.RegisterWithImageRequest
@@ -21,18 +20,7 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
-import java.io.IOException
-import java.security.InvalidAlgorithmParameterException
-import java.security.InvalidKeyException
-import java.security.KeyStoreException
-import java.security.NoSuchAlgorithmException
-import java.security.NoSuchProviderException
-import java.security.SignatureException
-import java.security.UnrecoverableEntryException
 import java.util.concurrent.TimeUnit
-import javax.crypto.BadPaddingException
-import javax.crypto.IllegalBlockSizeException
-import javax.crypto.NoSuchPaddingException
 import javax.inject.Inject
 
 
@@ -105,6 +93,14 @@ class SeniorCitizenRepository @Inject constructor(
     fun updateUser(request : UpdateUserRequest): Observable<UpdateUserResponse>{
         val observer: Observable<UpdateUserResponse>?
         observer = update(request)
+        return observer
+    }
+
+    fun loginAccount(username: String,password: String): Observable<LoginRequest>{
+        val observer: Observable<LoginRequest>?
+
+        observer = login(username,password)
+
         return observer
     }
 
@@ -188,46 +184,14 @@ class SeniorCitizenRepository @Inject constructor(
 
         return apiInterface.getAllSenior("Bearer $token")
             .doOnNext {
-
-                for (item in it) {
-                    Timber.i("insertSeniorCitizen:%s",item.firstName)
-                    seniorCitizenDao.insertSeniorCitizen(item)
+                if(it.isNotEmpty()){
+                    seniorCitizenDao.purgeUsers()
+                    for (item in it) {
+                        Timber.i("insertSeniorCitizen:%s",item.firstName)
+                        seniorCitizenDao.insertSeniorCitizen(item)
+                    }
                 }
             }
-    }
-
-    private fun conceal(textToConceal: String): String{
-        try {
-            val encryptedText: ByteArray = utils.enCryptInstance().encryptText(
-                BuildConfig.SECRET_KEY,
-                textToConceal
-            )
-
-            return Base64.encodeToString(encryptedText, Base64.DEFAULT)
-        } catch (e: UnrecoverableEntryException) {
-            Timber.e(e)
-        } catch (e: NoSuchAlgorithmException) {
-            Timber.e(e)
-        } catch (e: NoSuchProviderException) {
-            Timber.e(e)
-        } catch (e: KeyStoreException) {
-            Timber.e(e)
-        } catch (e: IOException) {
-            Timber.e(e)
-        } catch (e: NoSuchPaddingException) {
-            Timber.e(e)
-        } catch (e: InvalidKeyException) {
-            Timber.e(e)
-        } catch (e: InvalidAlgorithmParameterException) {
-            e.printStackTrace()
-        } catch (e: SignatureException) {
-            e.printStackTrace()
-        } catch (e: IllegalBlockSizeException) {
-            e.printStackTrace()
-        } catch (e: BadPaddingException) {
-            e.printStackTrace()
-        }
-        return textToConceal //returning the raw message
     }
 
     private fun getSeniorCitizenFromDb(): Observable<List<Entity.SeniorCitizen>> {
@@ -245,35 +209,6 @@ class SeniorCitizenRepository @Inject constructor(
             .doOnNext {
                 Timber.e(it.size.toString())
             }
-    }
-
-    fun comparePassword(u: String, p: String) {
-        //try to encrypt p
-        val converted = conceal(p)
-
-        val disposable = attemptLogin(u)
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-
-            .subscribe({ data ->
-                //decrypt data
-
-                // val encrypted = Base64.decode(data[0].password, Base64.DEFAULT);
-                // utils.deCryptInstance().decryptData(BuildConfig.SECRET_KEY,encrypted,encrypted.get(0))
-                Timber.i("check if match")
-                Timber.i("database password: %s",data[0].password)
-                Timber.i("user input password: $converted")
-
-            },{
-                    err ->
-                    Timber.e(err)
-            })
-
-        disposable.dispose()
-    }
-
-    private fun attemptLogin(u: String) : Observable<List<Entity.SeniorCitizen>>{
-        return seniorCitizenDao.attemptLoginWithUserName(u)
     }
 
     fun getSeniorById(id: String): Observable<List<Entity.SeniorCitizen>> {
@@ -298,6 +233,14 @@ class SeniorCitizenRepository @Inject constructor(
         return apiInterface.updateUser(
             "Bearer "+Constants.APP_TOKEN,
             request
+        )
+    }
+
+    private fun login(username: String,password: String): Observable<LoginRequest>{
+        return apiInterface.loginUser(
+            "Bearer "+Constants.APP_TOKEN,
+            username,
+            password
         )
     }
 }

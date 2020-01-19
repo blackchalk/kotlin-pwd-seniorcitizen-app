@@ -3,6 +3,7 @@ package com.seniorcitizen.app.data.remote
 import com.seniorcitizen.app.data.model.AppAuthenticateRequest
 import com.seniorcitizen.app.data.model.AppAuthenticateResponse
 import com.seniorcitizen.app.data.model.Entity
+import com.seniorcitizen.app.data.model.LoginRequest
 import com.seniorcitizen.app.data.model.RegisterRequest
 import com.seniorcitizen.app.data.model.RegisterResponse
 import com.seniorcitizen.app.data.model.RegisterWithImageRequest
@@ -66,5 +67,11 @@ interface ApiInterface {
         @Header("Authorization") authToken: String,
         @Body request: UpdateUserRequest
     ): Observable<UpdateUserResponse>
+
+    fun loginUser(
+        @Header("Authorization") authToken: String,
+        @Query("username") username: String,
+        @Query("password") password: String
+    ): Observable<LoginRequest>
 
 }
