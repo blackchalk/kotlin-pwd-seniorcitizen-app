@@ -12,7 +12,7 @@ import java.io.Serializable
 sealed class Entity: BaseObservable(){
 
 @Entity(
-	tableName = "seniorCitizen",indices = [Index(value = ["idNumber"], unique = true)]
+	tableName = "seniorCitizen",indices = [Index(value = ["seniorCitizenID"], unique = true)]
 )
 data class SeniorCitizen(
 
