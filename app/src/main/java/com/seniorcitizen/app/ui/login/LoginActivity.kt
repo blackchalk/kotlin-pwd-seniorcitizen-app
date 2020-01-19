@@ -6,6 +6,7 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.seniorcitizen.app.R
 import com.seniorcitizen.app.data.model.Entity
+import com.seniorcitizen.app.data.model.LoginRequest
 import com.seniorcitizen.app.databinding.ActivityLoginBinding
 import com.seniorcitizen.app.ui.base.BaseActivity
 import com.seniorcitizen.app.ui.home.HomeActivity
@@ -34,19 +35,42 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginCallback{
             it.user = Entity.SeniorCitizen()
         }
 
-        viewModel.seniorCitizenResult().observe(this,Observer<List<Entity.SeniorCitizen>>{
-            if (it!=null){
-                Timber.e(it.size.toString())
+        // viewModel.seniorCitizenResult().observe(this,Observer<List<Entity.SeniorCitizen>>{
+        //     if (it!=null){
+        //         Timber.e(it.size.toString())
+        //     }
+        // })
+        //
+        // viewModel.seniorCitizenError().observe(this, Observer<String> {
+        //     if (it!=null){
+        //         toast(resources.getString(R.string.error_401) + it)
+        //     }
+        // })
+        //
+        // viewModel.seniorCitizenLoader().observe(this, Observer<Boolean>{
+        //     if (it){
+        //         btn_login.isEnabled = false
+        //         progress_bar.visibility = View.VISIBLE
+        //     }else{
+        //         btn_login.isEnabled = true
+        //         progress_bar.visibility = View.GONE
+        //     }
+        // })
+
+        viewModel.loginAccountResult().observe(this,Observer<LoginRequest>{
+            if(it!=null){
+                Timber.i(it.firstName)
+                toHomePage()
             }
         })
 
-        viewModel.seniorCitizenError().observe(this, Observer<String> {
+        viewModel.loginAccountError().observe(this, Observer<String> {
             if (it!=null){
                 toast(resources.getString(R.string.error_401) + it)
             }
         })
 
-        viewModel.seniorCitizenLoader().observe(this, Observer<Boolean>{
+        viewModel.loginAccountLoading().observe(this, Observer<Boolean>{
             if (it){
                 btn_login.isEnabled = false
                 progress_bar.visibility = View.VISIBLE
@@ -66,7 +90,6 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginCallback{
 
     override fun onSuccess() {
         onToastMessage(getString(R.string.login_success))
-        toHomePage()
     }
 
     override fun onFailure(responseMessage: String?) {

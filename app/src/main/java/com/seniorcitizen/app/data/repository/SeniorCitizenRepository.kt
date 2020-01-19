@@ -101,7 +101,28 @@ class SeniorCitizenRepository @Inject constructor(
 
         observer = login(username,password)
 
-        return observer
+        return observer.doOnNext { account ->
+
+            val cit = Entity.SeniorCitizen(
+                firstName = account.firstName,
+                middleName = account.middleName,
+                lastName = account.lastName,
+                birthday = account.birthday,
+                address = account.address,
+                isSenior = account.isSenior,
+                isPWD = account.isPWD,
+                isActive = account.isActive,
+                modifiedDate = account.modifiedDate,
+                creationDate = account.creationDate,
+                seniorCitizenID = account.seniorCitizenID,
+                seniorImage = account.seniorImage,
+                sex = account.sex,
+                username = account.username,
+                password = account.password,
+                idNumber = account.idNumber
+            )
+            seniorCitizenDao.insertSeniorCitizen(cit)
+        }
     }
 
     fun updateUserWithImage(request: RegisterRequest, image : String?):Observable<RegisterResponse>{

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.seniorcitizen.app.data.model.Entity
+import com.seniorcitizen.app.data.model.LoginRequest
 import com.seniorcitizen.app.data.repository.SeniorCitizenRepository
 import com.seniorcitizen.app.utils.Validator
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -27,11 +28,20 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
     var seniorCitizenError: MutableLiveData<String> = MutableLiveData()
     var seniorCitizenLoader: MutableLiveData<Boolean> = MutableLiveData()
 
+    var loginAccountResult: MutableLiveData<LoginRequest> = MutableLiveData()
+    var loginAccountError: MutableLiveData<String> = MutableLiveData()
+    var loginAccountLoading: MutableLiveData<Boolean> = MutableLiveData()
+
     fun seniorCitizenResult(): LiveData<List<Entity.SeniorCitizen>> = seniorCitizenResult
     fun seniorCitizenError(): LiveData<String> = seniorCitizenError
     fun seniorCitizenLoader(): LiveData<Boolean> = seniorCitizenLoader
 
+    fun loginAccountResult(): LiveData<LoginRequest> = loginAccountResult
+    fun loginAccountError(): LiveData<String> = loginAccountError
+    fun loginAccountLoading(): LiveData<Boolean> = loginAccountLoading
+
     private var disposableObserver: DisposableObserver<List<Entity.SeniorCitizen>>? = null
+    private var dispoableLoginObserver: DisposableObserver<LoginRequest>? = null
 
     private val _onProgressBar = MutableLiveData<Boolean>()
     fun onProgressBar() = _onProgressBar as LiveData<Boolean>
@@ -44,6 +54,38 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
 
     fun watchFieldUserName(text: CharSequence?) { _isErrorUserName.value = text?.let { validator.isValidName(it) } }
     fun watchFieldPassword(text: CharSequence?) { _isErrorPassword.value = text?.let { validator.isValidPassword(it) }
+    }
+
+    fun doLoginOnline(user : Entity.SeniorCitizen){
+        if (contentFillValidate(user)){
+            _onProgressBar.value = true
+            dispoableLoginObserver = object: DisposableObserver<LoginRequest>(){
+                override fun onComplete() {
+                    Timber.i("onComplete")
+                    dispoableLoginObserver?.dispose()
+                }
+
+                override fun onNext(t: LoginRequest) {
+                    loginAccountResult.postValue(t)
+                    loginAccountLoading.postValue(false)
+                    _onProgressBar.postValue(false)
+                    loginCallback.onSuccess()
+                }
+
+                override fun onError(e: Throwable) {
+                    Timber.e(e.message)
+                    loginAccountLoading.postValue(false)
+                    _onProgressBar.postValue(false)
+                    loginCallback.onFailure(e.message)
+                }
+            }
+
+            seniorCitizenRepository.loginAccount(user.username!!,user.password!!)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .debounce(400, TimeUnit.MILLISECONDS)
+                .subscribe(dispoableLoginObserver!!)
+        }
     }
 
     fun doLogin(user : Entity.SeniorCitizen){
@@ -108,6 +150,9 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
     }
 
     fun getLoggedInUser() : String? {
-        return seniorCitizenResult.value?.first()?.idNumber.toString()
+        // return seniorCitizenResult.value?.first()?.idNumber.toString()
+        val number = loginAccountResult.value?.idNumber.toString()
+        Timber.i(number)
+        return number
     }
 }

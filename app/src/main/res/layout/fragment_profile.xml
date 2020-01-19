@@ -405,6 +405,34 @@
 				app:layout_constraintTop_toBottomOf="@+id/et_user_password"
 				app:layout_constraintVertical_bias="0.0" />
 
+			<TextView
+				android:id="@+id/tv_age_msg"
+				style="@style/TextPrimaryBodyStyle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/profile_page_age_label"
+				android:textColor="@color/colorOpacityText"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintHorizontal_bias="0.0"
+				app:layout_constraintStart_toStartOf="@+id/et_user_password"
+				app:layout_constraintTop_toBottomOf="@+id/tv_error_user_password"
+				app:layout_constraintVertical_bias="0.0" />
+
+			<TextView
+				android:id="@+id/tv_age"
+				style="@style/TextPrimaryBodyStyle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="@dimen/margin_primary"
+				android:text="@string/profile_page_age_label"
+				android:textColor="@color/colorOpacityText"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintHorizontal_bias="0.0"
+				app:layout_constraintStart_toEndOf="@+id/tv_age_msg"
+				app:layout_constraintTop_toBottomOf="@+id/tv_error_user_password"
+				app:layout_constraintVertical_bias="0.0" />
 
 			<LinearLayout
 				android:id="@+id/ll_terms"
@@ -441,17 +469,35 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginStart="@dimen/margin_horizontal"
+				android:layout_marginTop="16dp"
 				android:layout_marginEnd="@dimen/margin_horizontal"
-				android:layout_marginBottom="@dimen/margin_secondary"
-				android:layout_marginTop="@dimen/margin_secondary"
+				android:layout_marginBottom="8dp"
 				android:background="@drawable/bg_button_rectangle"
 				android:text="@string/update_profile"
+				android:textColor="@color/colorSecondaryText"
+				android:visibility="visible"
+				app:layout_constraintBottom_toTopOf="@+id/btn_logout"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@+id/tv_age_msg" />
+
+			<Button
+				android:id="@+id/btn_logout"
+				style="@style/TextPrimaryButtonStyle"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="@dimen/margin_horizontal"
+				android:layout_marginEnd="@dimen/margin_horizontal"
+				android:layout_marginBottom="@dimen/margin_primary"
+				android:layout_marginTop="@dimen/margin_primary"
+				android:background="@drawable/bg_button_rectangle"
+				android:text="@string/profile_logout"
 				android:textColor="@color/colorSecondaryText"
 				android:visibility="visible"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintBottom_toBottomOf="parent"
-				app:layout_constraintTop_toBottomOf="@+id/tv_error_user_password"
+				app:layout_constraintTop_toBottomOf="@+id/btn_update"
 				app:layout_constraintVertical_bias="1.0" />
 
 			<LinearLayout

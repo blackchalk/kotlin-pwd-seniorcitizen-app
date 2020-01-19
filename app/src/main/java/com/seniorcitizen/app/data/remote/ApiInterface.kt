@@ -68,6 +68,7 @@ interface ApiInterface {
         @Body request: UpdateUserRequest
     ): Observable<UpdateUserResponse>
 
+    @GET("api/senior/login")
     fun loginUser(
         @Header("Authorization") authToken: String,
         @Query("username") username: String,

@@ -179,7 +179,7 @@
             android:layout_marginEnd="@dimen/margin_horizontal"
             android:layout_marginBottom="@dimen/margin_secondary"
             android:background="@drawable/bg_button_rectangle"
-            android:onClick="@{() -> viewModel.doLogin(user)}"
+            android:onClick="@{() -> viewModel.doLoginOnline(user)}"
             android:text="@string/login"
             android:textColor="@color/colorSecondaryText"
             app:layout_constraintBottom_toTopOf="@+id/ll_to_register"

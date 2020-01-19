@@ -32,9 +32,12 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.text.DateFormat
 import java.text.DecimalFormat
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 
@@ -87,12 +90,12 @@ class ProfileFragment: BaseFragment<FragmentProfileBinding, ProfileViewModel>() 
 
 						val item = it[0]
 
-						val formatbday = formatBirthday(item.birthday)
-						item.birthday = formatbday
-						et_birthday.setText(formatbday)
-						selectedBirthday = et_birthday.text.toString()
-
 						mBinding.user = item
+
+						selectedBirthday = item.birthday
+						val formatbday = formatBirthday(item.birthday)
+
+						et_birthday.setText(formatbday)
 
 						if(item.sex.equals("Male")){
 							rg_sex.check(R.id.radio_male)
@@ -121,7 +124,7 @@ class ProfileFragment: BaseFragment<FragmentProfileBinding, ProfileViewModel>() 
 			val name = et_first_name.text.toString()
 			val middle = et_middle_name.text.toString()
 			val last = et_last_name.text.toString()
-			val birthday = et_birthday.text.toString()
+			val birthday = selectedBirthday
 			val address = et_address.text.toString()
 			val pw = et_user_password.text.toString()
 			val user = et_user_name.text.toString()
@@ -168,11 +171,44 @@ class ProfileFragment: BaseFragment<FragmentProfileBinding, ProfileViewModel>() 
 		handleBirthdayDatePick()
 
 		profile_img!!.setOnClickListener { showPictureDialog() }
+
+		btn_logout.setOnClickListener {
+			activity?.finish()
+		}
 	}
 
 	fun formatBirthday(stringDate: String?): String{
+
 		// convert birthday
 		val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)//model.birthday.toString(), Locale.US
+		val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.US)
+		var str = ""
+
+		try{
+			val projectedAge = getAge(stringDate).toString()
+			tv_age.text = projectedAge
+			str = formatter.format(parser.parse(stringDate))
+
+		}catch (io : ParseException){
+
+			val parsemod = SimpleDateFormat("MMM dd,yyyy", Locale.US)
+			val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
+			selectedBirthday = format.format(parsemod.parse(stringDate))
+
+			val projectedAge = getAge(selectedBirthday).toString()
+			tv_age.text = projectedAge
+
+			if (stringDate != null) {
+				str = stringDate
+			}
+		}
+
+		return str
+	}
+
+	fun formatBirthday2(stringDate: String?): String{
+		// convert birthday
+		val parser = SimpleDateFormat("yyyy-MM-dd", Locale.US)//model.birthday.toString(), Locale.US
 		val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.US)
 
 		return formatter.format(parser.parse(stringDate))
@@ -419,11 +455,13 @@ class ProfileFragment: BaseFragment<FragmentProfileBinding, ProfileViewModel>() 
 				cal.set(Calendar.MONTH, monthOfYear)
 				cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-				val myFormat = "yyyy-MM-dd"
+				val myFormat = "yyyy-MM-dd'T'HH:mm:ss"
 				val sdf = SimpleDateFormat(myFormat, Locale.US)
 				val selectedDate = sdf.format(cal.time)
-				et_birthday.setText(selectedDate)
-				selectedBirthday = et_birthday.text.toString()
+				selectedBirthday = selectedDate
+
+				val form = formatBirthday(selectedDate)
+				et_birthday.setText(form)
 			}
 
 		et_birthday.setOnClickListener {
@@ -439,6 +477,43 @@ class ProfileFragment: BaseFragment<FragmentProfileBinding, ProfileViewModel>() 
 			dpd?.datePicker?.maxDate = System.currentTimeMillis()
 			dpd?.show()
 		}
+	}
+
+	fun getAge(
+		stringDate: String?
+	): Int? {
+
+		val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
+		val date = parser.parse(stringDate!!)
+
+		val year: Int? = date?.year
+		val month: Int? = date?.month
+		val day: Int? = date?.day
+
+		//calculating age from dob
+		val dob: Calendar = Calendar.getInstance()
+		val today: Calendar = Calendar.getInstance()
+		dob.set(year!!, month!!, day!!)
+		// var age: Int = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR)
+		// if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
+		// 	age--
+		// }
+		// Timber.i("%s/year-%s,month-%s,day-%s",date,year,month,day)
+		// Timber.i("%s",age)
+
+		val projectedAge = calculateAgeWithJava7(date,today.time)
+
+		return projectedAge
+	}
+
+	fun calculateAgeWithJava7(
+		birthDate: Date?,
+		currentDate: Date?
+	): Int { // validate inputs ...
+		val formatter: DateFormat = SimpleDateFormat("yyyyMMdd")
+		val d1: Int = formatter.format(birthDate).toInt()
+		val d2: Int = formatter.format(currentDate).toInt()
+		return (d2 - d1) / 10000
 	}
 
 	override fun onStart() {

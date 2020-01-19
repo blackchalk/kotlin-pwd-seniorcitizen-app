@@ -73,6 +73,8 @@
 
     <string name="profile_page_title">Profile</string>
     <string name="update_profile">Update Profile</string>
+    <string name="profile_logout">Logout</string>
     <string name="profile_page_welcome_text">Looking good! It\'s your profile</string>
+    <string name="profile_page_age_label">Age: </string>
 
 </resources>
