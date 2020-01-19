@@ -71,4 +71,8 @@
     <string name="scanner">QR Scanner</string>
     <string name="deeplink">Deep Link</string>
 
+    <string name="profile_page_title">Profile</string>
+    <string name="update_profile">Update Profile</string>
+    <string name="profile_page_welcome_text">Looking good! It\'s your profile</string>
+
 </resources>

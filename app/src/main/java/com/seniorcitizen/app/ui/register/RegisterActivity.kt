@@ -119,7 +119,6 @@ class RegisterActivity: BaseActivity<ActivityRegisterBinding>(), RegisterCallbac
     private fun takePhotoFromCamera() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             // Ensure that there's a camera activity to handle the intent
-
             try{
 
                 val photoDirectory = File (
@@ -267,45 +266,6 @@ class RegisterActivity: BaseActivity<ActivityRegisterBinding>(), RegisterCallbac
         }
     }
 
-    fun doCompressionIfNecessary(f : File?){
-        Timber.i("path: %s",f!!.absolutePath)
-        Timber.i("size: %s", f.length() / 1024)
-        Timber.i("size: %s",getReadableFileSize(f.length()))
-        //check the file size not greater than 500kb else do a compression
-        val actualImgSize = f.length() / 1024 // in KB
-        if (actualImgSize > 500){
-            //do compression
-            val com = Compressor(this)
-
-            disposable = com
-                .compressToFileAsFlowable(actualImage)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    compressedImage = it
-                    Timber.i("compressedImage size: %s",compressedImage!!.length() / 1024)
-                    Timber.i("compressedImage size: %s",getReadableFileSize(compressedImage!!.length()))
-                    Timber.i("compressedImage path: %s",compressedImage!!.absolutePath)
-
-                    saveImage(BitmapFactory.decodeFile(compressedImage!!.absolutePath))
-                    longToast("Image Saved: $currentPhotoPath")
-                    Glide.with(this).load(currentPhotoPath).into(profile_img)
-
-                },{
-                    it.printStackTrace()
-                    showError(it.message)
-                })
-
-
-        }else{
-            //save image and set pic
-            val passedImg = BitmapFactory.decodeFile(actualImage!!.absolutePath)
-            saveImage(passedImg)
-            setPic()
-        }
-    }
-
-
     fun saveImage(myBitmap: Bitmap) {
         val bytes = ByteArrayOutputStream()
         myBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes)
@@ -343,85 +303,11 @@ class RegisterActivity: BaseActivity<ActivityRegisterBinding>(), RegisterCallbac
         }
     }
 
-    fun getResizedBitmap(bm : Bitmap, newWidth: Int, newHeight : Int) : Bitmap{
-        val width = bm.width
-        val height = bm.height
-        val scaleWidth = newWidth.toFloat() / width
-        val scaleHeight = newHeight.toFloat() / height
-
-        //create matrix
-        val matrix : Matrix = Matrix()
-        //resize bm
-        matrix.postScale(scaleWidth,scaleHeight)
-
-        //recreate bitmap
-        val resizedBitmap = Bitmap.createBitmap(bm,0,0,width,height,matrix,false)
-        bm.recycle()
-        return resizedBitmap
-    }
-
     private fun setPic() {
         longToast("Image Saved: $currentPhotoPath")
         Glide.with(this).load(currentPhotoPath).into(profile_img)
         profile_img.setBackgroundColor(getRandomColor())
     }
-
-    // @Throws(IOException::class)
-    // private fun createImageFile(): File {
-    //     // Create an image file name
-    //     val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-    //     val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-    //     return File.createTempFile(
-    //         "JPEG_${timeStamp}_", /* prefix */
-    //         ".jpg", /* suffix */
-    //         storageDir /* directory */
-    //     ).apply {
-    //         // Save a file: path for use with ACTION_VIEW intents
-    //         currentPhotoPath = absolutePath
-    //     }
-    // }
-
-    // a duplicate of above method but with one type of name format intenteded
-    // @Throws(IOException::class)
-    // private fun createImageFileSingleName(): File {
-    //     // Create an image file name
-    //     val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-    //     val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-    //     return File.createTempFile(
-    //         "JPEG_${timeStamp}_", /* prefix */
-    //         ".jpg", /* suffix */
-    //         storageDir /* directory */
-    //     ).apply {
-    //         // Save a file: path for use with ACTION_VIEW intents
-    //         currentPhotoPath = absolutePath
-    //     }
-    // }
-
-    // private fun dispatchTakePictureIntent() {
-    //     Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-    //         // Ensure that there's a camera activity to handle the intent
-    //         takePictureIntent.resolveActivity(packageManager)?.also {
-    //             // Create the File where the photo should go
-    //             val photoFile: File? = try {
-    //                 createImageFile()
-    //             } catch (ex: IOException) {
-    //                 // Error occurred while creating the File
-    //                 ...
-    //                 null
-    //             }
-    //             // Continue only if the File was successfully created
-    //             photoFile?.also {
-    //                 val photoURI: Uri = FileProvider.getUriForFile(
-    //                     this,
-    //                     "com.seniorcitizen.android.fileprovider",
-    //                     it
-    //                 )
-    //                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-    //                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO)
-    //             }
-    //         }
-    //     }
-    // }
 
     companion object {
         private const val IMAGE_DIRECTORY = "/pwd-senior-booklet"

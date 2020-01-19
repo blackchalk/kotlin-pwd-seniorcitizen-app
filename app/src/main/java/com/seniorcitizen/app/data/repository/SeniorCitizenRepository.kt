@@ -9,6 +9,8 @@ import com.seniorcitizen.app.data.model.RegisterRequest
 import com.seniorcitizen.app.data.model.RegisterResponse
 import com.seniorcitizen.app.data.model.RegisterWithImageRequest
 import com.seniorcitizen.app.data.model.Transaction
+import com.seniorcitizen.app.data.model.UpdateUserRequest
+import com.seniorcitizen.app.data.model.UpdateUserResponse
 import com.seniorcitizen.app.data.model.UserTransactionRequest
 import com.seniorcitizen.app.data.remote.ApiInterface
 import com.seniorcitizen.app.persistence.dao.SeniorCitizenDao
@@ -73,6 +75,40 @@ class SeniorCitizenRepository @Inject constructor(
     }
 
     fun registerUserWithImage(request: RegisterRequest, image : String?):Observable<RegisterResponse>{
+
+        val observer: Observable<RegisterResponse>?
+        if (image!=null){
+            val reg = RegisterWithImageRequest(
+                Address = request.Address,
+                Username = request.Username,
+                Password = request.Password,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                MiddleName = request.MiddleName,
+                Sex = request.Sex,
+                Birthday = request.Birthday,
+                IsPWD = request.IsPWD,
+                IDNumber = request.IDNumber,
+                IsSenior = request.IsSenior,
+                SeniorImage = image
+            )
+            Timber.i("$reg")
+            observer = regUserWithImage(reg)
+
+        }else{
+            observer = regUser(request)
+        }
+
+        return observer
+    }
+
+    fun updateUser(request : UpdateUserRequest): Observable<UpdateUserResponse>{
+        val observer: Observable<UpdateUserResponse>?
+        observer = update(request)
+        return observer
+    }
+
+    fun updateUserWithImage(request: RegisterRequest, image : String?):Observable<RegisterResponse>{
 
         val observer: Observable<RegisterResponse>?
         if (image!=null){
@@ -252,6 +288,16 @@ class SeniorCitizenRepository @Inject constructor(
     }
 
     private fun regUserWithImage(request: RegisterWithImageRequest): Observable<RegisterResponse>{
-        return apiInterface.registerWithImageUser("Bearer "+Constants.APP_TOKEN,request)
+        return apiInterface.registerWithImageUser(
+            "Bearer "+Constants.APP_TOKEN,
+            request
+        )
+    }
+
+    private fun update(request: UpdateUserRequest): Observable<UpdateUserResponse>{
+        return apiInterface.updateUser(
+            "Bearer "+Constants.APP_TOKEN,
+            request
+        )
     }
 }

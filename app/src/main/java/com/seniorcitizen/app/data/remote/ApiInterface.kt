@@ -7,6 +7,8 @@ import com.seniorcitizen.app.data.model.RegisterRequest
 import com.seniorcitizen.app.data.model.RegisterResponse
 import com.seniorcitizen.app.data.model.RegisterWithImageRequest
 import com.seniorcitizen.app.data.model.Transaction
+import com.seniorcitizen.app.data.model.UpdateUserRequest
+import com.seniorcitizen.app.data.model.UpdateUserResponse
 import io.reactivex.Observable
 import io.reactivex.Single
 import retrofit2.http.Body
@@ -58,5 +60,11 @@ interface ApiInterface {
         @Header("Authorization") authToken: String,
         @Body request: RegisterWithImageRequest
     ): Observable<RegisterResponse>
+
+    @POST("api/senior/update")
+    fun updateUser(
+        @Header("Authorization") authToken: String,
+        @Body request: UpdateUserRequest
+    ): Observable<UpdateUserResponse>
 
 }

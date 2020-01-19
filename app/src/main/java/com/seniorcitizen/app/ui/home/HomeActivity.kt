@@ -18,6 +18,7 @@ import com.seniorcitizen.app.databinding.ActivityHomeBinding
 import com.seniorcitizen.app.ui.base.BaseActivity
 import com.seniorcitizen.app.utils.Constants
 import io.reactivex.disposables.Disposable
+import org.jetbrains.anko.longToast
 import timber.log.Timber
 
 /**
@@ -40,7 +41,7 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 		val toolbar = findViewById<Toolbar>(R.id.toolbar)
 		setSupportActionBar(toolbar)
 
-		// checkPermission()
+		// prepare the bottom navigation and navigation controllers
 		init()
 	}
 
@@ -65,6 +66,14 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 				Timber.i("$result")
 			}
 		})
+
+		viewModel.onProgressBar().observe(this, Observer { isLoading ->
+			if(isLoading){
+				Timber.i("loading..")
+			}else{
+				Timber.i("loading stops")
+			}
+		})
 	}
 
 	private fun observeHomeLiveData() {
@@ -72,27 +81,6 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 		viewModel.doRequestLoggedInUser()
 	}
 
-	/**
-	 * moved to main activity
-	 */
-	// asks user for permissions for camera and read/write storage
-	// private fun checkPermission() {
-	// 	val rxPermissions = RxPermissions(this) // where this is an Activity or Fragment instance
-	// 	// Must be done during an initialization phase like onCreate
-	// 	disposable = rxPermissions
-	// 		.request(Manifest.permission.WRITE_EXTERNAL_STORAGE
-	// 			, Manifest.permission.READ_EXTERNAL_STORAGE
-	// 			,Manifest.permission.CAMERA)
-	// 		.subscribe { granted: Boolean ->
-	// 			if (granted) { // Always true pre-M
-	// 				init()
-	// 			} else { // Oups permission denied
-	// 				finish()
-	// 			}
-	// 		}
-	// }
-
-	// prepare the bottom navigation and navigation controllers
 	private fun init() {
 		val host: NavHostFragment = supportFragmentManager
 			.findFragmentById(R.id.nav_host_fragment) as NavHostFragment? ?: return
@@ -133,12 +121,19 @@ class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 
 	override fun onDestroy() {
 		super.onDestroy()
-		if (!disposable.isDisposed){
-			disposable.dispose()
+		if(this::disposable.isInitialized){
+			if (!disposable.isDisposed){
+				disposable.dispose()
+			}
 		}
+
 		viewModel.disposeElements()
 	}
 
-	override fun onSuccess() {
+	override fun onSuccess(message: String) {
+		runOnUiThread {
+			longToast(message)
+		}
+
 	}
 }

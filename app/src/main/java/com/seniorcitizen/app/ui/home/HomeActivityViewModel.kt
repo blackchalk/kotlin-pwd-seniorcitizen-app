@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.seniorcitizen.app.data.model.Entity
+import com.seniorcitizen.app.data.model.UpdateUserRequest
+import com.seniorcitizen.app.data.model.UpdateUserResponse
 import com.seniorcitizen.app.data.repository.SeniorCitizenRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver
@@ -25,6 +27,7 @@ class HomeActivityViewModel@Inject constructor(private val seniorCitizenReposito
     fun init(homeCallback: HomeCallback) {
         this.homeCallback = homeCallback
     }
+
     private lateinit var userIDNumber: String
     fun setUserIdNumber(number: String) { this.userIDNumber = number }
 
@@ -37,12 +40,13 @@ class HomeActivityViewModel@Inject constructor(private val seniorCitizenReposito
     fun seniorCitizenLoader(): LiveData<Boolean> = seniorCitizenLoader
 
     private lateinit var disposableObserver: DisposableObserver<List<Entity.SeniorCitizen>>
+    private lateinit var disposableUpdateUserObserver: DisposableObserver<UpdateUserResponse>
 
     private val _onProgressBar = MutableLiveData<Boolean>()
     fun onProgressBar() = _onProgressBar as LiveData<Boolean>
 
-
     fun doRequestLoggedInUser(){
+
         if (userIDNumber.isNotEmpty()){
 
             _onProgressBar.value = true
@@ -58,7 +62,7 @@ class HomeActivityViewModel@Inject constructor(private val seniorCitizenReposito
                     _onProgressBar.postValue(false)
 
                     if (t.isNotEmpty()){
-                        homeCallback.onSuccess()
+                        homeCallback.onSuccess("Logged in.")
                     }else{
                         homeCallback.onToastMessage("No result found.")
                     }
@@ -69,9 +73,10 @@ class HomeActivityViewModel@Inject constructor(private val seniorCitizenReposito
                     seniorCitizenLoader.postValue(false)
                     _onProgressBar.postValue(false)
                 }
-
             }
+
             val str = userIDNumber
+
             seniorCitizenRepository.getSeniorById(str)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -81,8 +86,39 @@ class HomeActivityViewModel@Inject constructor(private val seniorCitizenReposito
         }
     }
 
+    fun updateUser(updateModel : UpdateUserRequest){
+
+        _onProgressBar.value = true
+        disposableUpdateUserObserver = object: DisposableObserver<UpdateUserResponse>(){
+            override fun onComplete() {
+                _onProgressBar.postValue(false)
+            }
+
+            override fun onNext(t: UpdateUserResponse) {
+                homeCallback.onSuccess(t.message.toString())
+            }
+
+            override fun onError(e: Throwable) {
+                _onProgressBar.postValue(false)
+            }
+        }
+
+        seniorCitizenRepository.updateUser(updateModel)
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .debounce(400, TimeUnit.MILLISECONDS)
+            .doOnComplete{ disposableUpdateUserObserver.dispose() }
+            .subscribe(disposableUpdateUserObserver)
+    }
+
     fun disposeElements(){
-        if(!disposableObserver.isDisposed) disposableObserver.dispose()
+        if (this::disposableObserver.isInitialized){
+            if(!disposableObserver.isDisposed) disposableObserver.dispose()
+        }
+
+        if(this::disposableUpdateUserObserver.isInitialized){
+            if(!disposableUpdateUserObserver.isDisposed) disposableUpdateUserObserver.dispose()
+        }
     }
 
     fun formatBirthday(stringDate: String?): String{
@@ -91,7 +127,6 @@ class HomeActivityViewModel@Inject constructor(private val seniorCitizenReposito
         val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.US)
 
         return formatter.format(parser.parse(stringDate))
-
     }
 
     fun getAge(
