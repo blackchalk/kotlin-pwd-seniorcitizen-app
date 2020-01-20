@@ -66,10 +66,16 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
                 }
 
                 override fun onNext(t: LoginRequest) {
-                    loginAccountResult.postValue(t)
+
                     loginAccountLoading.postValue(false)
                     _onProgressBar.postValue(false)
-                    loginCallback.onSuccess()
+
+                    // block responses with null values
+                    if(t.idNumber == null || t.seniorCitizenID == null){
+                        loginCallback.onFailure("Login Failed. User is not registered.")
+                    }else{
+                        loginCallback.onSuccess()
+                    }
                 }
 
                 override fun onError(e: Throwable) {
