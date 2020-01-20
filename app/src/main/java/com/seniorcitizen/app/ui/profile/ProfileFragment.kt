@@ -76,6 +76,8 @@ class ProfileFragment: BaseFragment<FragmentProfileBinding, ProfileViewModel>() 
 
 		Timber.i("onActivityCreated")
 
+        et_id_number.isEnabled = false
+
 		mBinding.let {
 			it.viewmodel = homeActivityViewModel
 			it.user = Entity.SeniorCitizen()

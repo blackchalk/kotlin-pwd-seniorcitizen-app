@@ -117,6 +117,28 @@
 				app:layout_constraintTop_toBottomOf="@+id/tv_register_msg" />
 
 			<EditText
+				android:id="@+id/et_id_number"
+				style="@style/TextPrimaryBodyStyle"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_secondary"
+				android:layout_marginEnd="@dimen/margin_secondary"
+				android:background="@drawable/bg_field"
+				android:hint="@string/profile_id_number"
+				android:enabled="false"
+				android:inputType="none"
+				android:padding="@dimen/padding_secondary"
+				android:paddingTop="@dimen/padding_primary"
+				android:paddingBottom="@dimen/padding_primary"
+				android:text="@={user.idNumber}"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="@+id/profile_img"
+				app:layout_constraintTop_toBottomOf="@+id/profile_img"
+				app:layout_constraintVertical_bias="0.0"
+				tools:ignore="Autofill" />
+
+			<EditText
 				android:id="@+id/et_first_name"
 				style="@style/TextPrimaryBodyStyle"
 				android:layout_width="0dp"
@@ -132,8 +154,8 @@
 				android:text="@={user.firstName}"
 				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintStart_toStartOf="@+id/tv_register_msg"
-				app:layout_constraintTop_toBottomOf="@+id/profile_img"
+				app:layout_constraintStart_toStartOf="@+id/et_id_number"
+				app:layout_constraintTop_toBottomOf="@+id/et_id_number"
 				app:layout_constraintVertical_bias="0.0"
 				tools:ignore="Autofill" />
 
