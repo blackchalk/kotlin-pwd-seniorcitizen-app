@@ -34,5 +34,4 @@ abstract class BaseAdapter<B: ViewDataBinding, H: RecyclerView.ViewHolder, M: En
     override fun getItemViewType(position: Int): Int = position
 
     protected fun getBinding() = binding
-
 }

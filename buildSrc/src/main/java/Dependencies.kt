@@ -10,6 +10,7 @@ object Versions {
     const val supportLibrary = "27.1.0"
 
     // App Libraries
+    const val androidx = "1.0.0"
     const val dagger = "2.16"
     const val glassfishAnnotation = "10.0-b28"
     const val glide = "4.6.1"
@@ -30,6 +31,7 @@ object Versions {
     const val moshi = "1.6.0"
     const val lifecycle = "1.1.1"
     const val lifecycleCompiler = "1.1.1"
+    const val easyValidation = "1.0.1"
 
     // Test Libraries
     const val androidSupportRules = "1.0.0"
@@ -47,6 +49,7 @@ object Versions {
 @Suppress("unused")
 object AppDependencies {
 
+    const val androidxCore = "androidx.core:core-ktx:${Versions.androidx}"
     const val androidSupportAnnotations = "com.android.support:support-annotations:${Versions.supportLibrary}"
     const val androidSupportAppCompatV7 = "com.android.support:appcompat-v7:${Versions.supportLibrary}"
     const val androidSupportConstraintLayout = "com.android.support.constraint:constraint-layout:${Versions.constraintLayout}"
@@ -84,6 +87,7 @@ object AppDependencies {
     const val lifecycle = "android.arch.lifecycle:extensions:${Versions.lifecycle}"
     const val lifecycleCompiler = "android.arch.lifecycle:compiler:${Versions.lifecycleCompiler}"
     const val moshiConverter = "com.squareup.retrofit2:converter-moshi:2.0.0-beta3"
+    const val easyValidation = "com.wajahatkarim3.easyvalidation:easyvalidation-core:${Versions.easyValidation}"
 }
 
 @Suppress("unused")

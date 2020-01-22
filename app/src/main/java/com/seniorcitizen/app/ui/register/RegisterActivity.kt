@@ -5,10 +5,11 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.graphics.Matrix
 import android.media.MediaScannerConnection
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Base64
 import android.view.View
 import android.widget.RadioButton
@@ -23,6 +24,7 @@ import com.seniorcitizen.app.databinding.ActivityRegisterBinding
 import com.seniorcitizen.app.ui.base.BaseActivity
 import com.seniorcitizen.app.ui.login.LoginActivity
 import com.seniorcitizen.app.utils.FileUtil
+import com.wajahatkarim3.easyvalidation.core.view_ktx.validator
 import id.zelory.compressor.Compressor
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -52,10 +54,15 @@ class RegisterActivity: BaseActivity<ActivityRegisterBinding>(), RegisterCallbac
 
     private var actualImage: File? = null
     private var compressedImage: File? = null
-
     private var captureImgFile: File? = null
-
     private var selectedImageString : String? = null
+
+    private var isFirstNameValid = false
+    private var isMiddleNameValid = false
+    private var isLastNameValid = false
+    private var isAddressValid = false
+    private var isUserNameValid = false
+    private var isUserPasswordValid = false
 
     override fun getContentView(): Int = R.layout.activity_register
 
@@ -75,22 +82,200 @@ class RegisterActivity: BaseActivity<ActivityRegisterBinding>(), RegisterCallbac
             finish()
         }
 
-        btn_register.setOnClickListener {
-
-
-            if (selectedImageString!=null){
-                viewModel.doRegister(getBinding()?.user,selectedImageString)
-            }else{
-                toast("Please Select a profile image")
-            }
-
-        }
-
-        tv_to_login.setOnClickListener { toLoginPage() }
-
         handleBirthdayDatePick()
 
         profile_img!!.setOnClickListener{ showPictureDialog() }
+
+        registrationfieldsValidation()
+
+        btn_register.setOnClickListener {
+
+            // null check
+            if(et_user_name.text.isNullOrBlank() || et_password.text.isNullOrBlank()
+                || et_first_name.text.isNullOrBlank()
+                || et_middle_name.text.isNullOrBlank()
+                || et_last_name.text.isNullOrBlank()
+                || et_address.text.isNullOrBlank())
+            {
+                // validitity check
+                if(isUserNameValid
+                    && isUserPasswordValid
+                    && isFirstNameValid
+                    && isMiddleNameValid
+                    && isLastNameValid
+                    && isAddressValid)
+                {
+                    if (selectedImageString!=null){
+
+                        viewModel.doRegister(getBinding()?.user,selectedImageString)
+
+                    }else{
+
+                        toast("Please Select a profile image.")
+                    }
+                }else{
+                    toast("Please correct the validation.")
+                }
+            }else{
+                toast("Please complete the details.")
+            }
+        }
+
+        tv_to_login.setOnClickListener { toLoginPage() }
+    }
+
+    private fun registrationfieldsValidation() {
+
+        val userFirstNameWatcher = object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                isFirstNameValid = et_first_name.validator()
+                    .nonEmpty()
+                    .minLength(2)
+                    .addErrorCallback {
+                        et_first_name.error = it
+                    }
+                    .addSuccessCallback {
+
+                        et_first_name.error = null
+                    }
+                    .check()
+            }
+        }
+
+        val userMiddleNameWatcher = object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                isMiddleNameValid = et_middle_name.validator()
+                    .nonEmpty()
+                    .minLength(2)
+                    .addErrorCallback {
+                        et_middle_name.error = it
+                    }
+                    .addSuccessCallback {
+
+                        et_middle_name.error = null
+                    }
+                    .check()
+            }
+        }
+
+        val userLastNameWatcher = object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                isLastNameValid = et_last_name.validator()
+                    .nonEmpty()
+                    .minLength(2)
+                    .addErrorCallback {
+                        et_last_name.error = it
+                    }
+                    .addSuccessCallback {
+
+                        et_last_name.error = null
+                    }
+                    .check()
+            }
+        }
+
+        val userAddressWatcher = object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                isAddressValid = et_address.validator()
+                    .nonEmpty()
+                    .minLength(2)
+                    .addErrorCallback {
+                        et_address.error = it
+                    }
+                    .addSuccessCallback {
+
+                        et_address.error = null
+                    }
+                    .check()
+            }
+        }
+
+        val userNameWatcher = object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                isUserNameValid = et_user_name.validator()
+                    .nonEmpty()
+                    .minLength(2)
+                    .addErrorCallback {
+                        et_user_name.error = it
+                    }
+                    .addSuccessCallback {
+
+                        et_user_name.error = null
+                    }
+                    .check()
+            }
+        }
+
+        val passwordWatcher = object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                isUserPasswordValid = et_password.validator()
+                    .nonEmpty()
+                    .minLength(8)
+                    .atleastOneUpperCase()
+                    .atleastOneLowerCase()
+                    .atleastOneNumber()
+                    .atleastOneSpecialCharacters()
+                    .addErrorCallback {
+
+                        ti_password.error = it
+                        ti_password.errorIconDrawable = null
+                    }
+                    .addSuccessCallback {
+
+                        ti_password.error = null
+                    }
+                    .check()
+            }
+        }
+
+        et_first_name.addTextChangedListener(userFirstNameWatcher)
+        et_middle_name.addTextChangedListener(userMiddleNameWatcher)
+        et_last_name.addTextChangedListener(userLastNameWatcher)
+        et_address.addTextChangedListener(userAddressWatcher)
+        et_user_name.addTextChangedListener(userNameWatcher)
+        et_password.addTextChangedListener(passwordWatcher)
     }
 
     private val GALLERY = 1
@@ -339,7 +524,7 @@ class RegisterActivity: BaseActivity<ActivityRegisterBinding>(), RegisterCallbac
 
     private fun handleBirthdayDatePick() {
 
-        et_birthday.hint = "MM-dd-yyyy"
+        // et_birthday.hint = "yyyy-MM-dd"
 
         val cal = Calendar.getInstance()
 
@@ -420,7 +605,10 @@ class RegisterActivity: BaseActivity<ActivityRegisterBinding>(), RegisterCallbac
 
     private fun getRandomColor(): Int {
         val rand = Random()
-        return Color.argb(100, rand.nextInt(256), rand.nextInt(256), rand.nextInt(256))
+        return Color.argb(100,
+            rand.nextInt(256),
+            rand.nextInt(256),
+            rand.nextInt(256))
     }
 
     fun showError(errorMessage: String?) {

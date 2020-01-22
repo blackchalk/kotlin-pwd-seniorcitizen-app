@@ -24,62 +24,44 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
         this.loginCallback = loginCallback
     }
 
-    var seniorCitizenResult: MutableLiveData<List<Entity.SeniorCitizen>> = MutableLiveData()
-    var seniorCitizenError: MutableLiveData<String> = MutableLiveData()
-    var seniorCitizenLoader: MutableLiveData<Boolean> = MutableLiveData()
-
     var loginAccountResult: MutableLiveData<LoginRequest> = MutableLiveData()
     var loginAccountError: MutableLiveData<String> = MutableLiveData()
     var loginAccountLoading: MutableLiveData<Boolean> = MutableLiveData()
-
-    fun seniorCitizenResult(): LiveData<List<Entity.SeniorCitizen>> = seniorCitizenResult
-    fun seniorCitizenError(): LiveData<String> = seniorCitizenError
-    fun seniorCitizenLoader(): LiveData<Boolean> = seniorCitizenLoader
 
     fun loginAccountResult(): LiveData<LoginRequest> = loginAccountResult
     fun loginAccountError(): LiveData<String> = loginAccountError
     fun loginAccountLoading(): LiveData<Boolean> = loginAccountLoading
 
-    private var disposableObserver: DisposableObserver<List<Entity.SeniorCitizen>>? = null
-    private var dispoableLoginObserver: DisposableObserver<LoginRequest>? = null
+    private lateinit var dispoableLoginObserver: DisposableObserver<LoginRequest>
 
     private val _onProgressBar = MutableLiveData<Boolean>()
     fun onProgressBar() = _onProgressBar as LiveData<Boolean>
 
-    private val _isErrorUserName = MutableLiveData<Boolean>()
-    fun isErrorUserName() = _isErrorUserName as LiveData<Boolean>
-
-    private val _isErrorPassword = MutableLiveData<Boolean>()
-    fun isErrorPassword() = _isErrorPassword as LiveData<Boolean>
-
-    fun watchFieldUserName(text: CharSequence?) { _isErrorUserName.value = text?.let { validator.isValidName(it) } }
-    fun watchFieldPassword(text: CharSequence?) { _isErrorPassword.value = text?.let { validator.isValidPassword(it) }
-    }
-
     fun doLoginOnline(user : Entity.SeniorCitizen){
-        if (contentFillValidate(user)){
+
             _onProgressBar.value = true
+
             dispoableLoginObserver = object: DisposableObserver<LoginRequest>(){
+
                 override fun onComplete() {
                     Timber.i("onComplete")
-                    dispoableLoginObserver?.dispose()
+                    loginAccountLoading.postValue(false)
+                    _onProgressBar.postValue(false)
                 }
 
                 override fun onNext(t: LoginRequest) {
-
-                    loginAccountLoading.postValue(false)
-                    _onProgressBar.postValue(false)
-
-                    // block responses with null values
-                    if(t.idNumber == null || t.seniorCitizenID == null){
-                        loginCallback.onFailure("Login Failed. User is not registered.")
-                    }else{
+                    // prevent the app from proceeding if response has null values for key objects
+                    if(t.seniorCitizenID != null && t.idNumber != null){
+                        loginAccountResult.value = t
                         loginCallback.onSuccess()
+
+                    }else{
+                        loginCallback.onFailure("Login Failed")
                     }
                 }
 
                 override fun onError(e: Throwable) {
-                    Timber.e(e.message)
+
                     loginAccountLoading.postValue(false)
                     _onProgressBar.postValue(false)
                     loginCallback.onFailure(e.message)
@@ -90,68 +72,20 @@ class LoginViewModel @Inject constructor(private val seniorCitizenRepository: Se
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .debounce(400, TimeUnit.MILLISECONDS)
-                .subscribe(dispoableLoginObserver!!)
-        }
-    }
-
-    fun doLogin(user : Entity.SeniorCitizen){
-        if (contentFillValidate(user)){
-            _onProgressBar.value = true
-
-            disposableObserver = object : DisposableObserver<List<Entity.SeniorCitizen>>(){
-                override fun onComplete() {
-                    Timber.i("onComplete")
-                }
-
-                override fun onNext(t: List<Entity.SeniorCitizen>) {
-                    Timber.i("onNext")
-                    seniorCitizenResult.postValue(t)
-                    seniorCitizenLoader.postValue(false)
-                    _onProgressBar.postValue(false)
-
-                    if(t.isNotEmpty()){
-                        loginCallback.onSuccess()
-                        // getLoggedInUser()
-                    }else{
-                        loginCallback.onFailure("No User Found.")
-                    }
-                }
-
-                override fun onError(e: Throwable) {
-                    Timber.i("onError")
-
-                    seniorCitizenLoader.postValue(false)
-                    _onProgressBar.postValue(false)
-                    loginCallback.onFailure(e.message)
-                }
-            }
-
-            user.username?.let { user.password?.let { it1 ->
-                seniorCitizenRepository.getSeniorLogin(it,
-                    it1)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .debounce(400, TimeUnit.MILLISECONDS)
-                    .subscribe(disposableObserver!!) } }
-            }
+                .subscribe(dispoableLoginObserver)
     }
 
     private fun contentFillValidate(user: Entity.SeniorCitizen): Boolean {
-        if (user.username.let { it != null})
-            if (user.password.let { it != null && it.isNotEmpty() })
-                return true
-            else
-                _isErrorPassword.value = true
-        else
-            _isErrorUserName.value = true
-
-        return false
+        return (Validator.isValidName(user.username.toString(),false)
+            && Validator.isValidPassword(user.password.toString(),false))
     }
 
     fun disposeElements(){
-        if(disposableObserver!=null){
-            if(!disposableObserver!!.isDisposed){
-                disposableObserver!!.dispose()}
+
+        if(this::dispoableLoginObserver.isInitialized){
+            if(!dispoableLoginObserver.isDisposed){
+                dispoableLoginObserver.dispose()
+            }
         }
     }
 

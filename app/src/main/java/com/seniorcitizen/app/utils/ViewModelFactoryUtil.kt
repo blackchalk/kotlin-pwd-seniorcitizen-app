@@ -23,7 +23,5 @@ class ViewModelFactoryUtil@Inject constructor(
         } catch (e: Exception) {
             throw RuntimeException(e)
         }
-
     }
-
 }
