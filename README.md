@@ -30,3 +30,15 @@ The whole application is built based on the MVVM architectural pattern.
 
 The main advatage of using MVVM, there is no two way dependency between ViewModel and Model unlike MVP. Here the view can observe the datachanges in the viewmodel as we are using LiveData which is lifecycle aware. The viewmodel to view communication is achieved through observer pattern (basically observing the state changes of the data in the viewmodel).
 
+
+## Libraries, tools used
+
+* [Architecture Components](https://developer.android.com/topic/libraries/architecture/index.html) ([LiveData](https://developer.android.com/topic/libraries/architecture/livedata.html), [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel.html), [Room Persistance](https://developer.android.com/topic/libraries/architecture/room.html))
+* [Android Data Binding](https://developer.android.com/topic/libraries/data-binding/index.html)
+* [Dagger2](https://github.com/google/dagger) for dependency injection
+* [RxJava](https://github.com/ReactiveX/RxJava) & [RxAndroid](https://github.com/ReactiveX/RxAndroid) for composing asynchronous and event-based programming
+* [Retrofit](https://github.com/square/retrofit) for a type-safe HTTP client
+* [OkHttp](https://github.com/square/okhttp) for HTTP & HTTP/2 client
+* [GSON](https://github.com/google/gson) for JSON Serialization
+* [Stetho](https://github.com/facebook/stetho) for network inspection
+* [LeakCanary](https://github.com/square/leakcanary) for memory leak detection
