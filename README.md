@@ -24,6 +24,12 @@ There are a few ways to open this project.
 3. Record and View transaction history
 4. View individual transactions
 
+#### The app has following packages:
+1. **data**: It contains all the data accessing and manipulating components.
+2. **di**: Dependency providing classes using Dagger2.
+3. **ui**: View classes along with their corresponding ViewModel.
+4. **utils**: Utility classes.
+
 The whole application is built based on the MVVM architectural pattern.
 
 # Application Architecture
