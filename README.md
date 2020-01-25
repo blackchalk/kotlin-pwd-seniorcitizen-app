@@ -33,7 +33,7 @@ The main advatage of using MVVM, there is no two way dependency between ViewMode
 
 ## Libraries, tools used
 
-* [Architecture Components](https://developer.android.com/topic/libraries/architecture/index.html) ([LiveData](https://developer.android.com/topic/libraries/architecture/livedata.html), [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel.html), [Room Persistance](https://developer.android.com/topic/libraries/architecture/room.html))
+* [Architecture Components](https://developer.android.com/topic/libraries/architecture/index.html) ([LiveData](https://developer.android.com/topic/libraries/architecture/livedata.html), [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel.html), [`Android Navigation Component`](https://developer.android.com/guide/navigation) based navigation, [Room Persistance](https://developer.android.com/topic/libraries/architecture/room.html))
 * [Android Data Binding](https://developer.android.com/topic/libraries/data-binding/index.html)
 * [Dagger2](https://github.com/google/dagger) for dependency injection
 * [RxJava](https://github.com/ReactiveX/RxJava) & [RxAndroid](https://github.com/ReactiveX/RxAndroid) for composing asynchronous and event-based programming
