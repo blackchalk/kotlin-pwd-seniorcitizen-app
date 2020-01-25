@@ -4,6 +4,10 @@ Development of pwd/senior citizen id and card
 
 - [x] Kotlin
 
+### Prerequisites
+
+['This project requires Android Studio version 3.6 or higher.'] 
+
 ## Getting Started
 
 There are a few ways to open this project.
@@ -12,11 +16,6 @@ There are a few ways to open this project.
 
 1. Android Studio -> File -> New -> From Version control -> Git
 2. Enter `https://github.com/blackchalk/kotlin-pwd-seniorcitizen-app.git` into URL field
-
-### Prerequisites
-
-'This project requires Android Studio version 3.6 or higher.' 
-
 
 # Highlights
 
