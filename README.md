@@ -42,6 +42,7 @@ The main advatage of using MVVM, there is no two way dependency between ViewMode
 * [GSON](https://github.com/google/gson) for JSON Serialization
 * [Stetho](https://github.com/facebook/stetho) for network inspection
 * [LeakCanary](https://github.com/square/leakcanary) for memory leak detection
+* [Qrcodereaderview] (https://github.com/dlazaro66/Qrcodereaderview) for QR code decoding
 
 ## Screen shots
 Unavailable
