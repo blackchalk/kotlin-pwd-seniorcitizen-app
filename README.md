@@ -2,7 +2,7 @@
 
 Development of pwd/senior citizen id and card
 
--[x] Kotlin
+- [x] Kotlin
 
 ## Getting Started
 
