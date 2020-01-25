@@ -6,7 +6,7 @@ Development of pwd/senior citizen id and card
 
 ### Prerequisites
 
-['This project requires Android Studio version 3.6 or higher.'] 
+[`This project requires Android Studio version 3.6 or higher.`] 
 
 ## Getting Started
 
