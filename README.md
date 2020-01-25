@@ -15,7 +15,7 @@ There are a few ways to open this project.
 
 ### Prerequisites
 
-:
+'This project requires Android Studio version 3.6 or higher.' 
 
 
 # Highlights
