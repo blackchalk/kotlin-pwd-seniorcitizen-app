@@ -18,12 +18,6 @@ import javax.inject.Inject
  */
 class Utils @Inject constructor(private val context: Context) {
 
-    private val deCryptor: DeCryptor = DeCryptor()
-    private val enCryptor: EnCryptor = EnCryptor()
-
-    fun deCryptInstance(): DeCryptor{ return deCryptor }
-    fun enCryptInstance(): EnCryptor{ return enCryptor }
-
     fun checkPermission(
         context: Context,
         activity: Activity,

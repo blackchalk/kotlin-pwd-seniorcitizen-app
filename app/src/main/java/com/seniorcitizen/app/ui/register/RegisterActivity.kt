@@ -91,11 +91,11 @@ class RegisterActivity: BaseActivity<ActivityRegisterBinding>(), RegisterCallbac
         btn_register.setOnClickListener {
 
             // null check
-            if(et_user_name.text.isNullOrBlank() || et_password.text.isNullOrBlank()
-                || et_first_name.text.isNullOrBlank()
-                || et_middle_name.text.isNullOrBlank()
-                || et_last_name.text.isNullOrBlank()
-                || et_address.text.isNullOrBlank())
+            if(!et_user_name.text.isNullOrBlank() || !et_password.text.isNullOrBlank()
+                || !et_first_name.text.isNullOrBlank()
+                || !et_middle_name.text.isNullOrBlank()
+                || !et_last_name.text.isNullOrBlank()
+                || !et_address.text.isNullOrBlank())
             {
                 // validitity check
                 if(isUserNameValid
@@ -120,6 +120,7 @@ class RegisterActivity: BaseActivity<ActivityRegisterBinding>(), RegisterCallbac
                 toast("Please complete the details.")
             }
         }
+
 
         tv_to_login.setOnClickListener { toLoginPage() }
     }
