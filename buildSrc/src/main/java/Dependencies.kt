@@ -10,7 +10,7 @@ object Versions {
     const val supportLibrary = "27.1.0"
 
     // App Libraries
-    const val androidx = "1.0.0"
+    const val androidx = "1.3.1"
     const val dagger = "2.16"
     const val glassfishAnnotation = "10.0-b28"
     const val glide = "4.6.1"
