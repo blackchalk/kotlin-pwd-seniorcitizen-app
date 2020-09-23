@@ -30,9 +30,14 @@ android {
         vectorDrawables.useSupportLibrary = true
     }
 
-    dataBinding {
-        enabled = true
-    }
+	buildFeatures {
+
+		dataBinding = true
+
+		// for view binding:
+		// viewBinding = true
+	}
+
     productFlavors {
     }
 
@@ -136,7 +141,7 @@ dependencies {
     implementation AppDependencies.gson
     implementation AppDependencies.javaxAnnotation
     implementation AppDependencies.javaxInject
-    implementation AppDependencies.kotlin
+//    implementation AppDependencies.kotlin
     implementation AppDependencies.okHttp
     implementation AppDependencies.okHttpLogger
     implementation AppDependencies.retrofit
