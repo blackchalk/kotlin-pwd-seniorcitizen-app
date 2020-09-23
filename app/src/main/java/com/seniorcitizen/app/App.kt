@@ -8,7 +8,7 @@ import dagger.android.DaggerApplication
 import timber.log.Timber
 
 /**
- * Created by Nic Evans on 2019-12-09.
+ * Created by Alvin Raygon on 2019-12-09.
  */
 class App : DaggerApplication(){
 

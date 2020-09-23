@@ -12,7 +12,7 @@ import java.io.InputStream
 import java.io.OutputStream
 
 /**
- * Created by Nic Evans on 2020-01-15.
+ * Created by Alvin Raygon on 2020-01-15.
  */
 internal object FileUtil {
     private const val EOF = -1

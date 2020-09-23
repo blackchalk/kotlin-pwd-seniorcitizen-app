@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import javax.inject.Inject
 
 /**
- * Created by Nic Evans on 2019-12-10.
+ * Created by Alvin Raygon on 2019-12-10.
  */
 class MainActivityViewModelFactory @Inject constructor(private val mainActivityViewModel: MainActivityViewModel): ViewModelProvider.Factory{
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {

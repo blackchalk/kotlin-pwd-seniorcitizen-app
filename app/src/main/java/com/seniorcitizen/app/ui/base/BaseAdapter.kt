@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.seniorcitizen.app.data.model.Entity
 
 /**
- * Created by Nic Evans on 2019-12-10.
+ * Created by Alvin Raygon on 2019-12-10.
  */
 abstract class BaseAdapter<B: ViewDataBinding, H: RecyclerView.ViewHolder, M: Entity.SeniorCitizen>
     (private val context: Context, private val listItem: List<M>) : RecyclerView.Adapter<H>() {

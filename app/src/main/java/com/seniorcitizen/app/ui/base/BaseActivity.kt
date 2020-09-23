@@ -11,7 +11,7 @@ import org.jetbrains.anko.toast
 import javax.inject.Inject
 
 /**
- * Created by Nic Evans on 2019-12-10.
+ * Created by Alvin Raygon on 2019-12-10.
  */
 abstract class BaseActivity<B: ViewDataBinding> : DaggerAppCompatActivity(), BaseCallback {
 

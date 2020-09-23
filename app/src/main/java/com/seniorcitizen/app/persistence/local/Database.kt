@@ -6,7 +6,7 @@ import com.seniorcitizen.app.data.model.Entity
 import com.seniorcitizen.app.persistence.dao.SeniorCitizenDao
 
 /**
- * Created by Nic Evans on 2019-12-10.
+ * Created by Alvin Raygon on 2019-12-10.
  */
 @Database(entities = [Entity.SeniorCitizen::class],version = 3)
 abstract class Database : RoomDatabase() {

@@ -1,7 +1,7 @@
 package com.seniorcitizen.app.data.remote
 
 /**
- * Created by Nic Evans on 2019-12-31.
+ * Created by Alvin Raygon on 2019-12-31.
  */
 sealed class ApiResponse<T> {
 

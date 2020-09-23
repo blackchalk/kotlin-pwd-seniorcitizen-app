@@ -1,7 +1,7 @@
 package com.seniorcitizen.app.utils
 
 /**
- * Created by Nic Evans on 2019-12-10.
+ * Created by Alvin Raygon on 2019-12-10.
  */
 class Constants {
     companion object {

@@ -22,7 +22,7 @@ import org.jetbrains.anko.longToast
 import timber.log.Timber
 
 /**
- * Created by Nic Evans on 2019-12-20.
+ * Created by Alvin Raygon on 2019-12-20.
  */
 class HomeActivity: BaseActivity<ActivityHomeBinding>(), HomeCallback {
 
