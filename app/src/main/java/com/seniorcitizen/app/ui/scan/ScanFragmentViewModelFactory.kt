@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import javax.inject.Inject
 
 /**
- * Created by Nic Evans on 2019-12-20.
+ * Created by Alvin Raygon on 2019-12-20.
  */
 class ScanFragmentViewModelFactory@Inject constructor(private val scanFragmentViewModel: ScanViewModel): ViewModelProvider.Factory{
 	override fun <T : ViewModel?> create(modelClass: Class<T>): T {

@@ -5,7 +5,7 @@ import dagger.MapKey
 import kotlin.reflect.KClass
 
 /**
- * Created by Nic Evans on 2019-12-11.
+ * Created by Alvin Raygon on 2019-12-11.
  */
 @Retention(AnnotationRetention.RUNTIME)
 @MapKey

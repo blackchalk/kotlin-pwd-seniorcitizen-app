@@ -8,7 +8,7 @@ import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
 /**
- * Created by Nic Evans on 2019-12-20.
+ * Created by Alvin Raygon on 2019-12-20.
  */
 class ScanViewModel@Inject constructor(val seniorCitizenRepository: SeniorCitizenRepository) : ViewModel()  {
 

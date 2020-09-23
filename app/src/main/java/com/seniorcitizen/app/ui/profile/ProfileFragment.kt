@@ -42,7 +42,7 @@ import java.util.Locale
 
 
 /**
- * Created by Nic Evans on 2019-12-20.
+ * Created by Alvin Raygon on 2019-12-20.
  */
 
 class ProfileFragment: BaseFragment<FragmentProfileBinding, ProfileViewModel>() {

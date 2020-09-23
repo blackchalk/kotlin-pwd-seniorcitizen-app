@@ -13,7 +13,7 @@ import timber.log.Timber
 import javax.inject.Singleton
 
 /**
- * Created by Nic Evans on 2019-12-10.
+ * Created by Alvin Raygon on 2019-12-10.
  */
 @Module
 class NetModule {

@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.fragment_transactions.*
 import timber.log.Timber
 
 /**
- * Created by Nic Evans on 2019-12-20.
+ * Created by Alvin Raygon on 2019-12-20.
  */
 class TransactionFragment: BaseFragment<FragmentTransactionsBinding, TransactionViewModel>(), TransactionSelectedListener {
 

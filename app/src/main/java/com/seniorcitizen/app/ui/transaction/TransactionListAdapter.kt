@@ -14,7 +14,7 @@ import java.util.ArrayList
 import java.util.Locale
 
 /**
- * Created by Nic Evans on 2020-01-02.
+ * Created by Alvin Raygon on 2020-01-02.
  */
 class TransactionListAdapter(
     val viewModel: TransactionViewModel,

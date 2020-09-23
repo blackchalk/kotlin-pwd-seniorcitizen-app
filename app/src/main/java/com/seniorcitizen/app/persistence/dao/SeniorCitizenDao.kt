@@ -9,7 +9,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 
 /**
- * Created by Nic Evans on 2019-12-10.
+ * Created by Alvin Raygon on 2019-12-10.
  */
 @Dao
 interface SeniorCitizenDao {

@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
- * Created by Nic Evans on 2020-01-03.
+ * Created by Alvin Raygon on 2020-01-03.
  */
 class RegisterViewModel @Inject constructor(
     private val seniorCitizenRepository: SeniorCitizenRepository,

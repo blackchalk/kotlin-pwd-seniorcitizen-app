@@ -9,7 +9,7 @@ import com.seniorcitizen.app.utils.Constants
 import org.jetbrains.anko.startActivity
 
 /**
- * Created by Nic Evans on 2019-12-10.
+ * Created by Alvin Raygon on 2019-12-10.
  */
 class SplashActivity: AppCompatActivity() {
 

@@ -16,7 +16,7 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 /**
- * Created by Nic Evans on 2019-12-11.
+ * Created by Alvin Raygon on 2019-12-11.
  */
 @Suppress("unused")
 @Module
