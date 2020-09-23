@@ -167,7 +167,7 @@ class ScanFragment: BaseFragment<FragmentScanBinding, ScanViewModel>(), QRCodeRe
 	}
 
 	override fun onSuccess(transaction: Transaction) {
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+		Timber.i("Success: %s",transaction.transactionID)
 	}
 
 	override fun onFailure(responseMessage: String, responseCode: Int) {
