@@ -1,4 +1,4 @@
-# PWD/SENIOR CITIZEN MOBILE APP
+# PWD SENIOR CITIZEN MOBILE APP
 
 Development of pwd/senior citizen id and card
 
