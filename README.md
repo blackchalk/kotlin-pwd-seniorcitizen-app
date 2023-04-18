@@ -5,7 +5,7 @@ Development of pwd/senior citizen id and card
 # Are you here reading the codebase?
 If you are here to explore the codebase and how technologies are implemented take note that this app
 is in partner with a POS system. Backend API is modelled the way how a simple pos system may transfer information
-to an application.
+to an application. You can find more information on how the backend works by checking the [APIInterface](https://github.com/blackchalk/kotlin-pwd-seniorcitizen-app/blob/master/app/src/main/java/com/seniorcitizen/app/data/remote/ApiInterface.kt) class
 
 If you want to make this app work you need to setup your own server, api and model how the app is designed or make your own!
 
